@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form
+    addrulepath="/administrator/components/com_researchprojects/models/rules"
+    addfieldpath="/administrator/components/com_researchprojects/models/fields"
+>
+    <fieldset
+        name="inputs"
+        label="COM_RESEARCHPROJECTS_FORM_LABEL"
+    >
+        <field
+            name="id"
+            type="hidden"
+        />
+        <field
+            name="title"
+            type="text"
+            size="30"
+            label="COM_RESEARCHPROJECTS_TITLE_LABEL"
+            description="COM_RESEARCHPROJECTS_TITLE_DESC"
+            filter="string"
+            required="true"
+            class=""
+            labelclass=""
+        />
+        <field
+            name="alias"
+            type="textarea"
+            cols="50"
+            rows="10"
+            label="COM_RESEARCHPROJECTS_ALIAS_LABEL"
+            description="COM_RESEARCHPROJECTS_ALIAS_DESC"
+            filter="htmlsafe"
+            required="true"
+            class=""
+            labelclass=""
+        />
+    </fieldset>
+</form>

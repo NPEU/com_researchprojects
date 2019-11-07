@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+    <fields
+        addrulepath="/administrator/components/com_researchprojects/models/rules"
+        addfieldpath="/administrator/components/com_researchprojects/models/fields"
+    >
+        <fieldset
+            name="researchprojects"
+            label="COM_RESEARCHPROJECTS_CONFIG_RECORDS_SETTINGS_LABEL"
+            description="COM_RESEARCHPROJECTS_CONFIG_RECORDS_SETTINGS_DESC"
+        >
+        </fieldset>
+
+        <fieldset name="permissions"
+            description="JCONFIG_PERMISSIONS_DESC"
+            label="JCONFIG_PERMISSIONS_LABEL"
+        >
+
+            <field name="rules" type="rules"
+                component="com_researchprojects"
+                filter="rules"
+                validate="rules"
+                label="JCONFIG_PERMISSIONS_LABEL"
+                section="component" />
+        </fieldset>
+    </fields>
+</config>

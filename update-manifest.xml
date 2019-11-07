@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<updates>
+    <update>
+        <name>NPEU: com_researchprojects</name>
+        <description>Joomla! com_researchprojects component</description>
+        <element>com_researchprojects</element>
+        <type>component</type>
+        <version>0.0.1</version>
+        <client>administrator</client>
+        <infourl title="NPEU: com_researchprojects">https://github.com/NPEU/com_researchprojects/releases/tag/v0.0.1</infourl>
+        <downloads>
+            <downloadurl type="full" format="zip">https://github.com/NPEU/com_researchprojects/archive/v0.0.1.zip</downloadurl>
+        </downloads>
+        <targetplatform name="joomla" />
+        <tags>
+            <tag>stable</tag>
+        </tags>
+    </update>
+</updates>
