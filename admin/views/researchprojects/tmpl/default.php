@@ -51,7 +51,10 @@ $listDirn    = $this->escape($this->state->get('list.direction'));
                     <th width="40%" style="max-width: 600px;">
                         <?php echo JHtml::_('searchtools.sort', 'COM_RESEARCHPROJECTS_RECORDS_TITLE', 'a.title', $listDirn, $listOrder); ?>
                     </th>
-                    <th width="34%">
+                    <th width="24%">
+                        <?php echo JText::_('COM_RESEARCHPROJECTS_RECORDS_TOPICS'); ?>
+                    </th>
+                    <th width="14%">
                         <?php echo JHtml::_('searchtools.sort', 'COM_RESEARCHPROJECTS_RECORDS_OWNER', 'owner_name', $listDirn, $listOrder); ?>
                     </th>
                     <th width="10%">
@@ -71,6 +74,9 @@ $listDirn    = $this->escape($this->state->get('list.direction'));
             </tfoot>
             <tbody>
             <?php foreach ($this->items as $i => $item) : ?>
+                <?php // Format topics: 
+                    $item->topics = str_replace("\n", "<br>\n", $item->topic_names);
+                ?>
                 <?php #$item->cat_link = JRoute::_('index.php?option=com_categories&extension=com_researchprojectss&task=category.edit&id=' . $item->catid); ?>
                 <?php $canCreate      = $user->authorise('core.create',     'com_researchprojects.' . $item->id); ?>
                 <?php $canEdit        = $user->authorise('core.edit',       'com_researchprojects.' . $item->id); ?>
@@ -100,6 +106,9 @@ $listDirn    = $this->escape($this->state->get('list.direction'));
                         <div class="small">
                             <?php #echo JText::_('JCATEGORY') . ': ' . (empty($item->category_title) ? 'none' : '<a href="' . $item->cat_link . '" target="_blank">' . $this->escape($item->category_title) . '</a>'); ?>
                         </div>
+                    </td>
+                    <td align="center">
+                        <?php echo $item->topics; ?>
                     </td>
                     <td align="center">
                         <a href="mailto:<?php echo $item->owner_email; ?>"><?php echo $item->owner_name; ?></a>

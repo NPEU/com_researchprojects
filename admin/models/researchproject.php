@@ -117,10 +117,14 @@ class ResearchProjectsModelResearchProject extends JModelAdmin
     {
         if ($item = parent::getItem($pk))
         {
-            // Convert the topics field to an array.
             $registry = new Registry;
-            $registry->loadString($item->topics);
+            $registry->loadArray($item->topics);
             $item->topics = $registry->toArray();
+            
+            // we need to convert the topics field to an array so the form select displays the
+            // correct values, but we don't want to lose the titles, so copying it over:
+            $item->topic_details = $item->topics;
+            $item->topics = array_keys($item->topics);
             
             // Convert the collaborators field to an array.
             $registry = new Registry;
@@ -132,7 +136,7 @@ class ResearchProjectsModelResearchProject extends JModelAdmin
             $registry->loadString($item->funders);
             $item->funders = $registry->toArray();
         }
-
+        #echo '<pre>'; var_dump($item); echo '</pre>'; exit;
         return $item;
     }
 
@@ -311,7 +315,7 @@ class ResearchProjectsModelResearchProject extends JModelAdmin
                 }
             }
         }
-
+#echo '<pre>'; var_dump(parent::save($data)); echo '</pre>'; exit;
         return parent::save($data);
     }
 

@@ -96,6 +96,100 @@ class ResearchProjectsModelResearchProjects extends JModelList
         return parent::getStoreId($id);
     }
 
+	/**
+	 * Gets the list of projects and adds expensive joins to the result set.
+	 *
+	 * @return  mixed  An array of data items on success, false on failure.
+	 *
+	 * @since   1.6
+	 */
+	public function getItems()
+	{
+		// Get a storage key.
+		$store = $this->getStoreId();
+
+		// Try to load the data from internal storage.
+		if (empty($this->cache[$store]))
+		{
+			$topics  = $this->getState('filter.topics');
+			$topicId = $this->getState('filter.topic_id');
+
+			if (isset($topics) && (empty($topics) || $topicId && !in_array($topicId, $topics)))
+			{
+				$items = array();
+			}
+			else
+			{
+				$items = parent::getItems();
+			}
+
+			// Bail out on an error or empty list.
+			if (empty($items))
+			{
+				$this->cache[$store] = $items;
+
+				return $items;
+			}
+
+			// Joining the topics with the main query is a performance hog.
+			// Find the information only on the result set.
+
+			// First pass: get list of the project id's and reset the counts.
+			$projectIds = array();
+
+			foreach ($items as $item)
+			{
+				$projectIds[] = (int) $item->id;
+				$item->topic_count = 0;
+				$item->topic_names = '';
+				$item->note_count = 0;
+			}
+
+			// Get the counts from the database only for the projects in the list.
+			$db    = $this->getDbo();
+			$query = $db->getQuery(true);
+
+			// Join over the topic mapping table.
+			$query->select('map.project_id, COUNT(map.topic_id) AS topic_count')
+				->from('#__researchprojects_topics_map AS map')
+				->where('map.project_id IN (' . implode(',', $projectIds) . ')')
+				->group('map.project_id')
+				// Join over the project topics table.
+				->join('LEFT', '#__researchprojects_topics AS g2 ON g2.id = map.topic_id');
+
+			$db->setQuery($query);
+
+			// Load the counts into an array indexed on the project id field.
+			try
+			{
+				$projectTopics = $db->loadObjectList('project_id');
+			}
+			catch (RuntimeException $e)
+			{
+				$this->setError($e->getMessage());
+
+				return false;
+			}
+
+			// Second pass: collect the topic counts into the master items array.
+			foreach ($items as &$item)
+			{
+				if (isset($projectTopics[$item->id]))
+				{
+					$item->topic_count = $projectTopics[$item->id]->topic_count;
+
+					// Topic_concat in other databases is not supported
+					$item->topic_names = $this->_getProjectDisplayedTopics($item->id);
+				}
+			}
+
+			// Add the items to the internal cache.
+			$this->cache[$store] = $items;
+		}
+
+		return $this->cache[$store];
+	}
+
     /**
      * Method to build an SQL query to load the list data.
      *
@@ -143,6 +237,24 @@ class ResearchProjectsModelResearchProjects extends JModelList
         {
             $query->where($db->quoteName('a.catid') . ' IN (' . implode(',', ArrayHelper::toInteger($categoryId)) . ')');
         }*/
+        
+        // Filter the items over the topic id if set.
+		$topicId = $this->getState('filter.topic_id');
+
+		if ($topicId)
+		{
+			$query->join('LEFT', '#__researchprojects_topics_map AS map2 ON map2.project_id = a.id')
+				->group(
+					$db->quoteName(
+						array(
+							'a.id',
+							'a.title'
+						)
+					)
+				);
+            $query->where('map2.topic_id = ' . (int) $topicId);
+		}
+        
 
         // Filter: like / search
         $search = $this->getState('filter.search');
@@ -182,4 +294,33 @@ class ResearchProjectsModelResearchProjects extends JModelList
 
         return $query;
     }
+    
+    
+	/**
+	 * SQL server change
+	 *
+	 * @param   integer  $project_id  User identifier
+	 *
+	 * @return  string   Groups titles imploded :$
+	 */
+	protected function _getProjectDisplayedTopics($project_id)
+	{
+		$db    = $this->getDbo();
+		$query = $db->getQuery(true)
+			->select($db->qn('title'))
+			->from($db->qn('#__researchprojects_topics', 'pt'))
+			->join('LEFT', $db->qn('#__researchprojects_topics_map', 'map') . ' ON (pt.id = map.topic_id)')
+			->where($db->qn('map.project_id') . ' = ' . (int) $project_id);
+
+		try
+		{
+			$result = $db->setQuery($query)->loadColumn();
+		}
+		catch (RunTimeException $e)
+		{
+			$result = array();
+		}
+
+		return implode("\n", $result);
+	}
 }

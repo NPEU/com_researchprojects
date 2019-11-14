@@ -13,6 +13,27 @@
             class="js-stools-search-string"
         />
         <field
+            name="owner_user_id"
+            type="researchadmins"
+            label="COM_RESEARCHPROJECTS_RECORDS_OWNER_LABEL"
+            description="COM_RESEARCHPROJECTS_RECORDS_OWNER_DESC"
+            onchange="this.form.submit();"
+        >
+            <option value="">COM_RESEARCHPROJECTS_RECORDS_OWNER_DEFAULT</option>
+        </field>
+        <field
+            name="topic_id"
+            type="sql"
+            label="COM_RESEARCHPROJECTS_RECORDS_TOPIC_LABEL"
+            description="COM_RESEARCHPROJECTS_RECORDS_TOPIC_DESC"
+            query="SELECT id, title FROM #__researchprojects_topics"
+            key_field="id"
+            value_field="title"
+            onchange="this.form.submit();"
+        >
+            <option value="">COM_RESEARCHPROJECTS_RECORDS_TOPIC_DEFAULT</option>
+        </field>
+        <field
             name="published"
             type="status"
             label="JOPTION_SELECT_PUBLISHED"
@@ -21,15 +42,6 @@
             onchange="this.form.submit();"
             >
             <option value="">JOPTION_SELECT_PUBLISHED</option>
-        </field>
-        <field
-            name="owner_user_id"
-            type="researchadmins"
-            label="COM_RESEARCHPROJECTS_RECORDS_OWNER_LABEL"
-            description="COM_RESEARCHPROJECTS_RECORDS_OWNER_DESC"
-            onchange="this.form.submit();"
-        >
-            <option value="">COM_RESEARCHPROJECTS_RECORDS_OWNER_DEFAULT</option>
         </field>
     </fields>
     <fields name="list">
@@ -46,8 +58,6 @@
             <option value="owner_name DESC">COM_RESEARCHPROJECTS_RECORDS_OWNER_DESC</option>
             <option value="a.state ASC">JSTATUS_ASC</option>
             <option value="a.state DESC">JSTATUS_DESC</option>
-            <option value="category_title ASC">JCATEGORY_ASC</option>
-            <option value="category_title DESC">JCATEGORY_DESC</option>
             <option value="a.id ASC">JGRID_HEADING_ID_ASC</option>
             <option value="a.id DESC">JGRID_HEADING_ID_DESC</option>
         </field>

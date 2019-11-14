@@ -33,15 +33,15 @@ class ResearchProjectsRouter extends JComponentRouterBase
         }*/
 
         // Fix the route for the breadcrumb:
-        if (
+        /*if (
             !empty($query['view']) && $query['view'] == 'researchprojects'
          && !empty($query['Itemid'])
         ) {
             unset ($query['view']);
             return $segments;
-        }
+        }*/
 
-        if (
+        /*if (
             isset($query['view']) && $query['view'] == 'researchproject'
          && isset($query['layout']) && $query['layout'] == 'form'
          && isset($query['id']) && $query['id'] > 0
@@ -54,29 +54,33 @@ class ResearchProjectsRouter extends JComponentRouterBase
             unset ($query['id']);
 
             return $segments;
-        }
+        }*/
 
-        if (isset($query['task']) && $query['task'] == 'researchproject.add') {
+        /*if (isset($query['task']) && $query['task'] == 'researchproject.add') {
             $segments[] = 'add';
             unset ($query['task']);
-        }
+        }*/
 
-        if (isset($query['task']) && isset($query['id']) && $query['task'] == 'researchproject.edit') {
+        /*if (isset($query['task']) && isset($query['id']) && $query['task'] == 'researchproject.edit') {
             $segments[] = 'edit';
             $segments[] = $query['id'];
             unset ($query['task']);
             unset ($query['id']);
-        }
+        }*/
 
-        if (isset($query['task']) && isset($query['id']) && $query['task'] == 'researchproject.view') {
+        /*if (isset($query['task']) && isset($query['id']) && $query['task'] == 'researchproject.view') {
             $segments[] = 'view';
             $segments[] = $query['id'];
             unset ($query['task']);
             unset ($query['id']);
+        }*/
+        
+         if (isset($query['task']) && $query['task'] == 'researchproject.view') {
+            unset ($query['task']);
         }
 
-        if (isset($query['view'])) {
-            $segments[] = $query['view'];
+        if (isset($query['view']) && $query['view'] == 'researchprojects') {
+            $segments[] = '';
             #unset ($query['view']);
         }
 
@@ -281,15 +285,15 @@ class ResearchProjectsRouter extends JComponentRouterBase
         }
         $vars = array();
 
-        if ($segments[0] == 'add') {
+        /*if ($segments[0] == 'add') {
 
             $vars['view']   = 'researchproject';
             $vars['layout'] = 'form';
 
             return $vars;
-        }
+        }*/
 
-        if ($segments[0] == 'alt') {
+        /*if ($segments[0] == 'alt') {
 
             $vars['view']   = 'researchprojects';
             $vars['layout'] = 'alt';
@@ -301,30 +305,37 @@ class ResearchProjectsRouter extends JComponentRouterBase
                 if (!(isset($query['id'] && $this->record_exists($query['id']))) {
                     JError::raiseError(404, JText::_('JGLOBAL_RESOURCE_NOT_FOUND'));
                 }
-            */
-        }
+            *
+        }*/
 
-        if ($segments[0] == 'view') {
-            if (!isset($segments[1])) {
+        if (!empty($segments[0])) {
+            /*if (!isset($segments[1])) {
                 // ID not supplied:
                 JError::raiseError(404, JText::_('JGLOBAL_RESOURCE_NOT_FOUND'));
                 return $vars;
+            }*/
+            
+            if ($topic_id = $this->topic_exists($segments[0])) {
+                $vars['topic_id'] = $topic_id;
+                #$vars['view'] = 'researchprojects';
+                unset($segments[0]);
+                
+            } else {            
+                $record_id = substr($segments[0], 0, strpos($segments[0], '-'));
+
+                if (!$this->record_exists($record_id)) {
+                    // Invalid ID:
+                    JError::raiseError(404, JText::_('JGLOBAL_RESOURCE_NOT_FOUND'));
+                    return $vars;
+                }
+
+                $vars['view'] = 'researchproject';
+                $vars['id']   = $record_id;
+                //$vars['layout'] = 'form';
             }
-
-            if (!$this->record_exists($segments[1])) {
-                // Invalid ID:
-                JError::raiseError(404, JText::_('JGLOBAL_RESOURCE_NOT_FOUND'));
-                return $vars;
-            }
-
-            $vars['view'] = 'researchproject';
-            $vars['id']   = $segments[1];
-            //$vars['layout'] = 'form';
-
-            return $vars;
         }
 
-        if ($segments[0] == 'edit') {
+        /*if ($segments[0] == 'edit') {
             if (!isset($segments[1])) {
                 // ID not supplied:
                 JError::raiseError(404, JText::_('JGLOBAL_RESOURCE_NOT_FOUND'));
@@ -354,7 +365,7 @@ class ResearchProjectsRouter extends JComponentRouterBase
             $vars['id']     = $segments[1];
 
             return $vars;
-        }
+        }*/
 
         return $vars;
 
@@ -449,9 +460,32 @@ class ResearchProjectsRouter extends JComponentRouterBase
             $db->setQuery($query);
 
             $record_id = $db->loadResult();
+
             return (bool) $record_id;
         }
         return false;
+    }
+    
+    /**
+     * Method to check a topic exists.
+     *
+     * @param   int     $id   The record ID
+     *
+     * @return  bool    Record does/does not exist.
+     */
+    protected function topic_exists($alias)
+    {
+        $db = JFactory::getDbo();
+        $query = $db->getQuery(true)
+            ->select($db->quoteName('id'))
+            ->from($db->quoteName('#__researchprojects_topics'))
+            ->where($db->quoteName('alias') . ' = ' . $db->quote($alias));
+        $db->setQuery($query);
+
+        $record_id = $db->loadResult();
+
+        return $record_id;
+
     }
 }
 
