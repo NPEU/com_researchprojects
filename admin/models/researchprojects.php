@@ -205,7 +205,7 @@ class ResearchProjectsModelResearchProjects extends JModelList
         $query->select(
             $this->getState(
                 'list.select',
-                'a.id, a.title, a.alias, a.owner_user_id, a.topics, a.checked_out, a.checked_out_time, a.created_by, a.state'
+                'a.id, a.title, a.alias, a.owner_user_id, a.checked_out, a.checked_out_time, a.created_by, a.state'
             )
         );
         #'a.id, a.title, a.alias, a.catid, a.owner_user_id, a.checked_out, a.checked_out_time, a.created_by, a.state'
