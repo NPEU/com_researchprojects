@@ -66,10 +66,16 @@ class ResearchProjectsHelper extends JHelperContent
             $str = trim(str_replace('(' . $institution . ')', '', $str));
         }
         
-        $name = explode(', ', $str);
+        // Really, there should be a comma in the remaining text, separating last name, first name,
+        // but this isn't (and shouldn't be) enforced, so check for presence of comma first:
+        if (strpos($str, ',')) {
+            $name = explode(',', $str);
+        } else {
+            $name = array('', $str);
+        }
         return array(
-            'first_name'  => $name[1],
-            'last_name'   => $name[0],
+            'first_name'  => trim($name[1]),
+            'last_name'   => trim($name[0]),
             'institution' => $institution,
             'url'         => $url
         );
