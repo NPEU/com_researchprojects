@@ -117,26 +117,27 @@ class ResearchProjectsModelResearchProject extends JModelAdmin
     {
         if ($item = parent::getItem($pk))
         {
-            $registry = new Registry;
-            $registry->loadArray($item->topics);
-            $item->topics = $registry->toArray();
-            
-            // we need to convert the topics field to an array so the form select displays the
-            // correct values, but we don't want to lose the titles, so copying it over:
-            $item->topic_details = $item->topics;
-            $item->topics = array_keys($item->topics);
-            
-            // Convert the collaborators field to an array.
-            $registry = new Registry;
-            $registry->loadString($item->collaborators);
-            $item->collaborators = $registry->toArray();
-            
-            // Convert the funders field to an array.
-            $registry = new Registry;
-            $registry->loadString($item->funders);
-            $item->funders = $registry->toArray();
+            if (!is_null($pk)) {
+                $registry = new Registry;
+                $registry->loadArray($item->topics);
+                $item->topics = $registry->toArray();
+
+                // we need to convert the topics field to an array so the form select displays the
+                // correct values, but we don't want to lose the titles, so copying it over:
+                $item->topic_details = $item->topics;
+                $item->topics = array_keys($item->topics);
+
+                // Convert the collaborators field to an array.
+                $registry = new Registry;
+                $registry->loadString($item->collaborators);
+                $item->collaborators = $registry->toArray();
+
+                // Convert the funders field to an array.
+                $registry = new Registry;
+                $registry->loadString($item->funders);
+                $item->funders = $registry->toArray();
+            }
         }
-        #echo '<pre>'; var_dump($item); echo '</pre>'; exit;
         return $item;
     }
 
@@ -205,23 +206,27 @@ class ResearchProjectsModelResearchProject extends JModelAdmin
         // Building something like this query:
         // REPLACE INTO `#__researchprojects_collaborators` VALUES ('Chris Gale (Imperial)'), ('Alex Heazell (Manchester)'), ('Tim Smith');
         $new_investigators = array();
-        
+
         if (!empty($data['pi_1'])) {
             // If not NPEU: e.g. Fiona Alderdice (NPEU)
             if (!preg_match('/\(NPEU\)$/', $data['pi_1'])) {
                 $new_investigators[] = '("' . md5($data['pi_1']) . '", "' . $data['pi_1'] . '")';
             }
         }
-        
+
         if (!empty($data['pi_2'])) {
             // If not NPEU: e.g. Fiona Alderdice (NPEU)
             if (!preg_match('/\(NPEU\)$/', $data['pi_2'])) {
                 $new_investigators[] = '("' . md5($data['pi_2']) . '", "' . $data['pi_2'] . '")';
             }
         }
-        
-        if (!empty($data['collaborators']['collaborators0']['collaborator'])) {
+
+        if (!empty($data['collaborators'])) {
             foreach ($data['collaborators'] as $key => $value) {
+                if (empty($value['collaborator'])) {
+                    unset($data['collaborators'][$key]);
+                    continue;
+                }
                 // If not NPEU: e.g. Fiona Alderdice (NPEU)
                 if (preg_match('/\(NPEU\)$/', $value['collaborator'])) {
                     continue;
@@ -229,17 +234,17 @@ class ResearchProjectsModelResearchProject extends JModelAdmin
                 $new_investigators[] = '("' . md5($value['collaborator']) . '", "' . $value['collaborator'] . '")';
             }
         }
-        
+
         if (!empty($new_investigators)) {
             $q = 'REPLACE INTO `#__researchprojects_collaborators` VALUES ' . implode(", ", $new_investigators) . ';';
-            #echo '<pre>'; var_dump($q); echo '</pre>'; exit;            
+            #echo '<pre>'; var_dump($q); echo '</pre>'; exit;
             $db->setQuery($q);
             if (!$db->execute($q)) {
                 JError::raiseError( 500, $db->stderr() );
                 return false;
             }
         }
-        
+
         // Special handling for funders. We need to add to the funders table all new values.
         $new_funders = array();
         if (!empty($data['funders']['funders0']['funder'])) {
@@ -252,7 +257,7 @@ class ResearchProjectsModelResearchProject extends JModelAdmin
             }
         }
         if (!empty($new_funders)) {
-            $q = 'REPLACE INTO `#__researchprojects_funders` VALUES ' . implode(", ", $new_funders) . ';';        
+            $q = 'REPLACE INTO `#__researchprojects_funders` VALUES ' . implode(", ", $new_funders) . ';';
             $db->setQuery($q);
             if (!$db->execute($q)) {
                 JError::raiseError( 500, $db->stderr() );
@@ -287,7 +292,7 @@ class ResearchProjectsModelResearchProject extends JModelAdmin
 
             $data['state'] = 0;
         }*/
-        
+
         #echo '<pre>'; var_dump($data); echo '</pre>'; exit;
 
         // Automatic handling of alias for empty fields
