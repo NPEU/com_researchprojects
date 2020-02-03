@@ -144,12 +144,24 @@
             step="1"
             default="2019"
         />
-        <field
+        <!--<field
             name="brand_id"
             type="brands"
             label="COM_RESEARCHPROJECTS_BRAND_LABEL"
             description="COM_RESEARCHPROJECTS_BRAND_DESC"
             default=""
+        >
+            <option value="">COM_RESEARCHPROJECTS_BRAND_DEFAULT</option>
+        </field>-->
+        <field
+            name="brand_id"
+            type="sql"
+            default="1"
+            label="COM_RESEARCHPROJECTS_BRAND_LABEL"
+            description="COM_RESEARCHPROJECTS_BRAND_DESC"
+            query="SELECT id AS value, name AS text FROM #__brands b WHERE b.catid = 171 ORDER BY text;"
+            key_field="value"
+            value_field="text"
         >
             <option value="">COM_RESEARCHPROJECTS_BRAND_DEFAULT</option>
         </field>
