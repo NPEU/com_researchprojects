@@ -32,7 +32,7 @@ class JFormFieldBrands extends JFormFieldList
     {
         $options = array();
         $db = JFactory::getDBO();
-        $q  = 'SELECT id, name FROM #__brands WHERE catid = 151 ORDER BY name';
+        $q  = 'SELECT id, name FROM #__brands WHERE catid = 171 ORDER BY name';
 
 
         $db->setQuery($q);
@@ -54,7 +54,7 @@ class JFormFieldBrands extends JFormFieldList
             $options = array_merge(parent::getOptions(), $options);
         } else {
             $options = parent::getOptions();
-            $options[0]->text = JText::_('COM_SITEAREAS_BRAND_DEFAULT_NO_BRANDS');
+            $options[0]->text = JText::_('COM_RESEARCHPROJECTS_BRAND_DEFAULT');
         }
         return $options;
     }
