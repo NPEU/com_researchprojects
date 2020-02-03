@@ -89,7 +89,7 @@ class JFormFieldCollaborators extends JFormFieldList
         $staff_members = $db->loadAssocList();        
         foreach ($staff_members as $staff_member) {
             $val  = $staff_member['last_name'] . ', ' . $staff_member['first_name'] . ' (NPEU)';
-            $text = strtoupper($staff_member['last_name']) . ', ' . $staff_member['first_name'] . ' (NPEU)';
+            $text = $staff_member['last_name'] . ', ' . $staff_member['first_name'] . ' (NPEU)';
             #$text = $staff_member['name'] . ' (NPEU)';
             $collaborators[$val] = $text;
         }
@@ -107,7 +107,7 @@ class JFormFieldCollaborators extends JFormFieldList
         foreach ($nonstaff_members as $nonstaff_member) {
             $val  = $nonstaff_member;
             $t = ResearchProjectsHelper::parseCollaborator($val);
-            $text = strtoupper($t['last_name']) . ', ' . $t['first_name'] . (empty($t['institution']) ? '' : ' (' . $t['institution'] .')') . (empty($t['url']) ? '' : ' [' . $t['url'] . ']');
+            $text = (empty($t['last_name']) ? '' : $t['last_name'] . ', ') . $t['first_name'] . (empty($t['institution']) ? '' : ' (' . $t['institution'] .')') . (empty($t['url']) ? '' : ' [' . $t['url'] . ']');
             $collaborators[$val] = $text;
         }
         
