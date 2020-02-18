@@ -44,6 +44,7 @@
         <file>researchprojects.php</file>
         <file>index.html</file>
         <file>router.php</file>
+        <folder>assets</folder>
         <folder>controllers</folder>
         <folder>language</folder>
         <folder>models</folder>
@@ -53,19 +54,6 @@
     <administration>
         <!-- Administration Menu Section -->
         <menu>COM_RESEARCHPROJECTS_MENU</menu>
-        <!-- Submenu, delete if component has only one view -->
-        <submenu>
-            <!--
-                Note that all & must be escaped to &amp; for the file to be valid
-                XML and be parsed by the installer
-            -->
-            <menu link="option=com_researchprojects" view="researchprojects">
-                COM_RESEARCHPROJECTS_MANAGER_SUBMENU_RECORDS
-            </menu>
-            <menu link="option=com_categories&amp;extension=com_researchprojects" view="categories">
-                COM_RESEARCHPROJECTS_MANAGER_SUBMENU_CATEGORIES
-            </menu>
-        </submenu>
 
         <!-- Administration Main File Copy Section -->
         <!-- Note the folder attribute: This attribute describes the folder

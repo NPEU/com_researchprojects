@@ -21,8 +21,6 @@ $global_edit_fields = array(
     'published',
     'state',
     'enabled',
-    'category',
-    'catid',
     'featured',
     'sticky',
     'access',

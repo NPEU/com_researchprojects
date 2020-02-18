@@ -26,7 +26,6 @@ class ResearchProjectsController extends JControllerLegacy
     public function display($cacheable = false, $urlparams = false)
     {
         require_once JPATH_COMPONENT . '/helpers/researchprojects.php';
-        require_once JPATH_COMPONENT . '/helpers/categories.php';
 
         $view   = $this->input->get('view', 'researchprojects');
         $layout = $this->input->get('layout', 'default');

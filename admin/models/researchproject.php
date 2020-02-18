@@ -56,18 +56,6 @@ class ResearchProjectsModelResearchProject extends JModelAdmin
             return false;
         }
 
-        // Determine correct permissions to check.
-        if ($this->getState('researchproject.id'))
-        {
-            // Existing record. Can only edit in selected categories.
-            #$form->setFieldAttribute('catid', 'action', 'core.edit');
-        }
-        else
-        {
-            // New record. Can only create in selected categories.
-            #$form->setFieldAttribute('catid', 'action', 'core.create');
-        }
-
         // Modify the form based on access controls.
         if (!$this->canEditState((object) $data))
         {
@@ -185,20 +173,6 @@ class ResearchProjectsModelResearchProject extends JModelAdmin
 
         // Get parameters:
         $params = JComponentHelper::getParams(JRequest::getVar('option'));
-        #echo '<pre>'; var_dump($data); echo '</pre>'; exit;
-        // For reference if needed:
-        // By default we're only looking for and acting upon the 'email admins' setting.
-        // If any other settings are related to this save method, add them here.
-        /*$email_admins_string = $params->get('email_admins');
-        if (!empty($email_admins_string) && $is_new) {
-            $email_admins = explode(PHP_EOL, trim($email_admins_string));
-            foreach ($email_admins as $email) {
-                // Sending email as an array to make it easier to expand; it's quite likely that a
-                // real app would need more info here.
-                $email_data = array('email' => $email);
-                $this->_sendEmail($email_data);
-            }
-        }*/
 
         // Special handling for pis and collaborators. We need to add to the collaborators table all new
         // values.
@@ -264,7 +238,7 @@ class ResearchProjectsModelResearchProject extends JModelAdmin
                 return false;
             }
         }
-        #echo '<pre>'; var_dump($data); echo '</pre>'; exit;
+
         // Alter the title for save as copy
         if ($app->input->get('task') == 'save2copy')
         {
@@ -274,26 +248,6 @@ class ResearchProjectsModelResearchProject extends JModelAdmin
             $data['alias']    = $alias;
             $data['state']    = 0;
         }
-
-        /*if ($input->get('task') == 'save2copy') {
-            $origTable = clone $this->getTable();
-            $origTable->load($input->getInt('id'));
-
-            // Note is using custom category field title, you need to change 'catid':
-            if ($data['title'] == $origTable->title) {
-                list($title, $alias) = $this->generateNewBrandTitle($data['catid'], $data['alias'], $data['title']);
-                $data['title'] = $title;
-                $data['alias'] = $alias;
-            } else {
-                if ($data['alias'] == $origTable->alias) {
-                    $data['alias'] = '';
-                }
-            }
-
-            $data['state'] = 0;
-        }*/
-
-        #echo '<pre>'; var_dump($data); echo '</pre>'; exit;
 
         // Automatic handling of alias for empty fields
         // Taken from com_content/models/article.php
@@ -320,7 +274,7 @@ class ResearchProjectsModelResearchProject extends JModelAdmin
                 }
             }
         }
-#echo '<pre>'; var_dump(parent::save($data)); echo '</pre>'; exit;
+
         return parent::save($data);
     }
 
@@ -338,7 +292,6 @@ class ResearchProjectsModelResearchProject extends JModelAdmin
         // Alter the title & alias
         $table = $this->getTable();
 
-        #while ($table->load(array('alias' => $alias, 'catid' => $category_id)))
         while ($table->load(array('alias' => $alias)))
         {
             if ($name == $table->title)

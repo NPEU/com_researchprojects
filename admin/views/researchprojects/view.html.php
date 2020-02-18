@@ -62,10 +62,6 @@ class ResearchProjectsViewResearchProjects extends JViewLegacy
     hyphens: auto;
 }
 CSS;
-        #$doc->addStyleDeclaration($style);
-
-
-        ResearchProjectsHelper::addSubmenu('researchprojects');
 
         // Check for errors.
         if (count($errors = $this->get('Errors')))
@@ -75,7 +71,6 @@ CSS;
         }
 
         $this->addToolbar();
-        $this->sidebar = JHtmlSidebar::render();
         parent::display($tpl);
     }
 
@@ -105,7 +100,7 @@ CSS;
             JToolBarHelper::deleteList('', 'researchprojects.delete');
         }
         */
-        if ($canDo->get('core.create') || count($user->getAuthorisedCategories('com_researchprojects', 'core.create')) > 0) {
+        if ($canDo->get('core.create')) {
             JToolbarHelper::addNew('researchproject.add');
         }
 

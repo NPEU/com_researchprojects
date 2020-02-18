@@ -85,7 +85,7 @@ class ResearchProjectsViewResearchProject extends JViewLegacy
         );
 
         // For new records, check the create permission.
-        if ($isNew && (count($user->getAuthorisedCategories('com_researchprojects', 'core.create')) > 0)) {
+        if ($isNew) {
             JToolbarHelper::apply('researchproject.apply');
             JToolbarHelper::save('researchproject.save');
             JToolbarHelper::save2new('researchproject.save2new');

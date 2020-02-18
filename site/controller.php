@@ -34,22 +34,6 @@ class ResearchProjectsController extends JControllerLegacy
         // Frontend is a bit messier than the backend.
         $id    = $this->input->getInt('r_id');
         $vName = $this->input->get('view', 'researchprojects');
-
-        // AK: I'm not keen on having the default view be 'researchprojects'. This may make more sense in a
-        // real scenario (e.g. 'weblinks' for where this is taken) but I find it less confusing this
-        // way.
-        /*if ($vName == 'researchprojects') {
-            $vName = 'researchprojects';
-        }
-        $this->input->set('view', $vName);*/
-
-        #echo '<pre>'; var_dump($this->input); echo '</pre>'; exit;
-
-        /*if (JFactory::getUser()->id ||($this->input->getMethod() == 'POST' && $vName = 'categories'))
-        {
-            $cachable = false;
-        }*/
-
         $safeurlparams = array(
             'id'                => 'INT',
             'limit'             => 'UINT',

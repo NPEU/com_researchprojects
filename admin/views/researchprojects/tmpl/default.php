@@ -25,15 +25,7 @@ $listDirn    = $this->escape($this->state->get('list.direction'));
 
 ?>
 <form action="<?php echo JRoute::_('index.php?option=com_researchprojects&view=researchprojects'); ?>" method="post" id="adminForm" name="adminForm">
-
-    <?php if (!empty( $this->sidebar)) : ?>
-    <div id="j-sidebar-container" class="span2">
-        <?php echo $this->sidebar; ?>
-    </div>
-    <div id="j-main-container" class="span10">
-    <?php else : ?>
     <div id="j-main-container">
-    <?php endif;?>
         <?php echo JLayoutHelper::render('joomla.searchtools.default', array('view' => $this)); ?>
         <div class="clearfix"> </div>
         <?php if (empty($this->items)) : ?>
@@ -77,7 +69,6 @@ $listDirn    = $this->escape($this->state->get('list.direction'));
                 <?php // Format topics: 
                     $item->topics = str_replace("\n", "<br>\n", $item->topic_names);
                 ?>
-                <?php #$item->cat_link = JRoute::_('index.php?option=com_categories&extension=com_researchprojectss&task=category.edit&id=' . $item->catid); ?>
                 <?php $canCreate      = $user->authorise('core.create',     'com_researchprojects.' . $item->id); ?>
                 <?php $canEdit        = $user->authorise('core.edit',       'com_researchprojects.' . $item->id); ?>
                 <?php $canCheckin     = $user->authorise('core.manage',     'com_checkin') || $item->checked_out == $user->id || $item->checked_out == 0; ?>
@@ -103,9 +94,6 @@ $listDirn    = $this->escape($this->state->get('list.direction'));
                         <br><span class="small">
                             <?php echo JText::sprintf('JGLOBAL_LIST_ALIAS', $this->escape($item->alias)); ?>
                         </span>
-                        <div class="small">
-                            <?php #echo JText::_('JCATEGORY') . ': ' . (empty($item->category_title) ? 'none' : '<a href="' . $item->cat_link . '" target="_blank">' . $this->escape($item->category_title) . '</a>'); ?>
-                        </div>
                     </td>
                     <td align="center">
                         <?php echo $item->topics; ?>

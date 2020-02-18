@@ -18,30 +18,6 @@ defined('_JEXEC') or die;
 class ResearchProjectsControllerResearchProject extends JControllerForm
 {
     /**
-     * The URL view item variable.
-     *
-     * @var    string
-     * @since  1.6
-     */
-    #protected $view_item = 'form';
-
-    /**
-     * The URL view list variable.
-     *
-     * @var    string
-     * @since  1.6
-     */
-    #protected $view_list = 'categories';
-
-    /**
-     * The URL edit variable.
-     *
-     * @var    string
-     * @since  3.2
-     */
-    #protected $urlVar = 'a.id';
-
-    /**
      * Method to add a new record.
      *
      * @return  boolean  True if the article can be added, false if not.
@@ -64,20 +40,6 @@ class ResearchProjectsControllerResearchProject extends JControllerForm
      */
     protected function allowAdd($data = array())
     {
-        /*$categoryId   = ArrayHelper::getValue($data, 'catid', $this->input->getInt('id'), 'int');
-        $allow      = null;
-
-        if ($categoryId)
-        {
-            // If the category has been passed in the URL check it.
-            $allow = JFactory::getUser()->authorise('core.create', $this->option . '.category.' . $categoryId);
-        }
-
-        if ($allow !== null)
-        {
-            return $allow;
-        }*/
-
         // In the absense of better information, revert to the component permissions.
         return parent::allowAdd($data);
     }
@@ -92,19 +54,6 @@ class ResearchProjectsControllerResearchProject extends JControllerForm
      */
     protected function allowEdit($data = array(), $key = 'id')
     {
-        /*$recordId   = (int) isset($data[$key]) ? $data[$key] : 0;
-        $categoryId = 0;
-
-        if ($recordId)
-        {
-            $categoryId = (int) $this->getModel()->getItem($recordId)->catid;
-        }
-
-        if ($categoryId)
-        {
-            // The category has been set. Check the category permissions.
-            return JFactory::getUser()->authorise('core.edit', $this->option . '.category.' . $categoryId);
-        }*/
         $user    = JFactory::getUser();
         $user_id = $user->id;
 

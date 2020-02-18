@@ -25,12 +25,10 @@ class ResearchProjectsModelResearchProjects extends JModelList
     {
         if (empty($config['filter_fields']))
         {
-            #'catid', 'a.catid', 'category_id',
             $config['filter_fields'] = array(
                 'id', 'a.id',
                 'title', 'a.title',
                 'alias', 'a.alias',
-                'c.title', 'category_title',
                 'params', 'a.params',
                 'state', 'a.state',
                 'owner_user_id', 'a.owner_user_id',
@@ -65,7 +63,6 @@ class ResearchProjectsModelResearchProjects extends JModelList
         // Load the filter state.
         $this->setState('filter.search', $this->getUserStateFromRequest($this->context . '.filter.search', 'filter_search', '', 'string'));
         $this->setState('filter.published', $this->getUserStateFromRequest($this->context . '.filter.published', 'filter_published', '', 'string'));
-        $this->setState('filter.category_id', $this->getUserStateFromRequest($this->context . '.filter.category_id', 'filter_category_id', '', 'cmd'));
 
         // Load the parameters.
         $params = JComponentHelper::getParams('com_researchprojects');
@@ -91,7 +88,6 @@ class ResearchProjectsModelResearchProjects extends JModelList
         // Compile the store id.
         $id .= ':' . $this->getState('filter.search');
         $id .= ':' . $this->getState('filter.published');
-        $id .= ':' . $this->getState('filter.category_id');
 
         return parent::getStoreId($id);
     }
@@ -211,10 +207,6 @@ class ResearchProjectsModelResearchProjects extends JModelList
         #'a.id, a.title, a.alias, a.catid, a.owner_user_id, a.checked_out, a.checked_out_time, a.created_by, a.state'
         $query->from($db->quoteName('#__researchprojects', 'a'));
 
-        // Join the categories table again for the project group (delete if not using categories):
-        #$query->select('c.title AS category_title')
-        #    ->join('LEFT', $db->quoteName('#__categories', 'c') . ' ON ' . $db->qn('c.id') . ' = ' . $db->qn('a.catid'));
-
         // Join over the users for the checked out user.
         $query->select('uc.name AS editor')
             ->join('LEFT', '#__users AS uc ON uc.id = a.checked_out');
@@ -225,18 +217,6 @@ class ResearchProjectsModelResearchProjects extends JModelList
             ->select($db->quoteName('o.email', 'owner_email'))
             ->join('LEFT', $db->quoteName('#__users', 'o') . ' ON ' . $db->qn('o.id') . ' = ' . $db->qn('a.owner_user_id'));
 
-        // Delete this filter if not using categories.
-        // Filter by a single or group of categories.
-        /*$categoryId = $this->getState('filter.category_id');
-
-        if (is_numeric($categoryId))
-        {
-            $query->where($db->quoteName('a.catid') . ' = ' . (int) $categoryId);
-        }
-        elseif (is_array($categoryId))
-        {
-            $query->where($db->quoteName('a.catid') . ' IN (' . implode(',', ArrayHelper::toInteger($categoryId)) . ')');
-        }*/
         
         // Filter the items over the topic id if set.
 		$topicId = $this->getState('filter.topic_id');

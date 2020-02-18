@@ -50,9 +50,6 @@ class ResearchProjectsModelResearchProjectform extends ResearchProjectsModelRese
         // Add compatibility variable for default naming conventions.
         $this->setState('form.id', $pk);
 
-        $categoryId = $app->input->getInt('catid');
-        $this->setState('researchproject.catid', $categoryId);
-
         $return = $app->input->get('return', null, 'base64');
 
         if (!JUri::isInternal(base64_decode($return)))
