@@ -117,7 +117,7 @@ class ResearchProjectsModelResearchProject extends JModelAdmin
     {
         if ($item = parent::getItem($pk))
         {
-            if (!is_null($pk)) {
+            if (!empty($item)) {
                 $registry = new Registry;
                 $registry->loadArray($item->topics);
                 $item->topics = $registry->toArray();
