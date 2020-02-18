@@ -44,7 +44,6 @@
         <file>researchprojects.php</file>
         <file>index.html</file>
         <file>router.php</file>
-        <folder>assets</folder>
         <folder>controllers</folder>
         <folder>language</folder>
         <folder>models</folder>
@@ -66,6 +65,7 @@
             <file>controller.php</file>
             <file>researchprojects.php</file>
             <file>index.html</file>
+            <folder>assets</folder>
             <folder>controllers</folder>
             <folder>helpers</folder>
             <folder>language</folder>
