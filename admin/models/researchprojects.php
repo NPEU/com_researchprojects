@@ -243,7 +243,6 @@ class ResearchProjectsModelResearchProjects extends JModelList
         {
             $like = $db->quote('%' . $search . '%');
             $query->where('a.title LIKE ' . $like);
-            $query->where('a.alias LIKE ' . $like);
         }
 
         // Filter by published state
