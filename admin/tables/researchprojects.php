@@ -50,14 +50,6 @@ class ResearchProjectsTableResearchProjects extends JTable
     {
         if (parent::load($pk, $reset))
         {
-            /*
-            // Convert the topics field to a registry.
-            $registry = new Registry;
-            $registry->loadString($this->topics, 'JSON');
-
-            $this->topics = $registry;
-            */
-
             // Convert the collaborators field to a registry.
             $registry = new JRegistry;
             $registry->loadString($this->collaborators, 'JSON');
@@ -82,7 +74,7 @@ class ResearchProjectsTableResearchProjects extends JTable
                   ->from($this->_db->quoteName('#__users'))
                   ->where($this->_db->quoteName('id') . ' = ' . (int) $this->owner_user_id);
             $this->_db->setQuery($query);
-            
+
             $this->owner_details = $this->_db->loadObject();
 
             // Load the topics.
@@ -96,17 +88,15 @@ class ResearchProjectsTableResearchProjects extends JTable
 
             // Add the topics to the project data.
             $this->topics = $this->_db->loadAssocList('id', 'title');
-            
+
             // Load the brand.
             $query = $this->_db->getQuery(true);
             $query->select('*')
                   ->from($this->_db->quoteName('#__brands'))
                   ->where($this->_db->quoteName('id') . ' = ' . (int) $this->brand_id);
             $this->_db->setQuery($query);
-            
-            $this->brand_details = $this->_db->loadObject();
-            
 
+            $this->brand_details = $this->_db->loadObject();
 
             return true;
         }
@@ -125,14 +115,6 @@ class ResearchProjectsTableResearchProjects extends JTable
      */
     public function bind($array, $ignore = '')
     {
-        /*if (isset($array['topics']) && is_array($array['topics']))
-        {
-            // Convert the topics field to a string.
-            $registry = new Registry;
-            $registry->loadArray($array['topics']);
-            $array['topics'] = (string) $registry;
-        }*/
-
         if (isset($array['collaborators']) && is_array($array['collaborators']))
         {
             // Convert the collaborators field to a string.
@@ -156,28 +138,18 @@ class ResearchProjectsTableResearchProjects extends JTable
             $registry->loadArray($array['params']);
             $array['params'] = (string) $registry;
         }
-
+#echo 'bind<pre>'; var_dump($array); echo '</pre>'; exit;
+#echo 'bind<pre>'; var_dump($this); echo '</pre>'; exit;
         // Attempt to bind the data.
         $return = parent::bind($array, $ignore);
 
-        // Load the real topic data based on the bound ids.
-        if ($return && !empty($this->topics))
+        // Topics isn't a field in the main table so `bind()` seems to delete it, but `store()`
+        // needs this data so re-add it:
+        /*if ($return && !empty($array['topics']))
         {
-            // Set the topic ids.
-            $this->topics = ArrayHelper::toInteger($this->topics);
-
-            // Get the titles for the topics.
-            $query = $this->_db->getQuery(true)
-                ->select($this->_db->quoteName('id'))
-                ->select($this->_db->quoteName('title'))
-                ->from($this->_db->quoteName('#__researchprojects_topics'))
-                ->where($this->_db->quoteName('id') . ' = ' . implode(' OR ' . $this->_db->quoteName('id') . ' = ', $this->topics));
-            $this->_db->setQuery($query);
-
-            #// Set the titles for the topics.
-            #$this->topic = $this->_db->loadAssocList('id', 'title');
-        }
-
+            $this->topics = $array['topics'];
+        }*/
+#echo 'bind<pre>'; var_dump($array); echo '</pre>'; #exit;
         return $return;
     }
 
@@ -202,7 +174,6 @@ class ResearchProjectsTableResearchProjects extends JTable
             ->select($db->quoteName('id'))
             ->from($db->quoteName('#__researchprojects'))
             ->where($db->quoteName('title') . ' = ' . $db->quote($this->title));
-            #->where($db->quoteName('catid') . ' = ' . (int) $this->catid);
         $db->setQuery($query);
 
         $xid = (int) $db->loadResult();
@@ -242,9 +213,10 @@ class ResearchProjectsTableResearchProjects extends JTable
      */
     public function store($updateNulls = false)
     {
-        $date = \JFactory::getDate();
-		$user = \JFactory::getUser();
-
+        $date   = \JFactory::getDate();
+		$user   = \JFactory::getUser();
+        $input  = \JFactory::getApplication()->input;
+        $form_data = new JRegistry($input->get('jform', '', 'array'));
 
 		if (!$this->id)
 		{
@@ -257,33 +229,33 @@ class ResearchProjectsTableResearchProjects extends JTable
         $return = parent::store($updateNulls);
 
         // Store the topics if the project data was saved.
-        if (is_array($this->topics) && count($this->topics))
-        {
-            $query = $this->_db->getQuery(true);
+        if ($return) {
 
-            // Remove existing associations, since we're adding them all again anyway:
-            $query -> delete($this->_db->quoteName('#__researchprojects_topics_map'))
-                   -> where($this->_db->quoteName('project_id') . ' = ' . (int) $this->id);
-            $this->_db->setQuery($query);
-            $this->_db->execute();
+            $topics = $form_data->get('topics', false);
 
-            // Added topic associations:
-            $query->clear()
-                  ->insert($this->_db->quoteName('#__researchprojects_topics_map'))
-                  ->columns(array($this->_db->quoteName('project_id'), $this->_db->quoteName('topic_id')));
-
-            // Have to break this up into individual queries for cross-database support.
-            foreach ($this->topics as $topic)
+            if (is_array($topics) && count($topics))
             {
-                $query->clear('values')
-                       ->values($this->id . ', ' . $topic);
+                $query = $this->_db->getQuery(true);
+
+                // Remove existing associations, since we're adding them all again anyway:
+                $query->delete($this->_db->quoteName('#__researchprojects_topics_map'))
+                      ->where($this->_db->quoteName('project_id') . ' = ' . (int) $this->id);
                 $this->_db->setQuery($query);
                 $this->_db->execute();
+
+                // Have to break this up into individual queries for cross-database support.
+                foreach ($topics as $topic_id)
+                {
+                    $query->clear();
+                    $query->insert($this->_db->quoteName('#__researchprojects_topics_map'))
+                          ->columns(array($this->_db->quoteName('project_id'), $this->_db->quoteName('topic_id')))
+                          ->values($this->id . ', ' . $topic_id);
+                    $this->_db->setQuery($query);
+                    $this->_db->execute();
+                }
             }
         }
 
-
-        #echo 'store<pre>'; var_dump($return); echo '</pre>'; exit;
         return $return;
     }
 

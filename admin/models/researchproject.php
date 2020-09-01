@@ -103,29 +103,31 @@ class ResearchProjectsModelResearchProject extends JModelAdmin
      */
     public function getItem($pk = null)
     {
-        if ($item = parent::getItem($pk))
-        {
-            if (!empty($item)) {
-                $registry = new Registry;
-                $registry->loadArray($item->topics);
-                $item->topics = $registry->toArray();
+        $item = parent::getItem($pk);
 
-                // we need to convert the topics field to an array so the form select displays the
-                // correct values, but we don't want to lose the titles, so copying it over:
-                $item->topic_details = $item->topics;
-                $item->topics = array_keys($item->topics);
-
-                // Convert the collaborators field to an array.
-                $registry = new Registry;
-                $registry->loadString($item->collaborators);
-                $item->collaborators = $registry->toArray();
-
-                // Convert the funders field to an array.
-                $registry = new Registry;
-                $registry->loadString($item->funders);
-                $item->funders = $registry->toArray();
-            }
+        if (empty($item) || is_null($item->id)) {
+            return $item;
         }
+
+        $registry = new Registry;
+        $registry->loadArray($item->topics);
+        $item->topics = $registry->toArray();
+
+        // we need to convert the topics field to an array so the form select displays the
+        // correct values, but we don't want to lose the titles, so copying it over:
+        $item->topic_details = $item->topics;
+        $item->topics = array_keys($item->topics);
+
+        // Convert the collaborators field to an array.
+        $registry = new Registry;
+        $registry->loadString($item->collaborators);
+        $item->collaborators = $registry->toArray();
+
+        // Convert the funders field to an array.
+        $registry = new Registry;
+        $registry->loadString($item->funders);
+        $item->funders = $registry->toArray();
+
         return $item;
     }
 
@@ -149,11 +151,13 @@ class ResearchProjectsModelResearchProject extends JModelAdmin
             $table->alias = JApplicationHelper::stringURLSafe($table->title);
         }
 
+        $table->modified    = $date->toSql();
+        $table->modified_by = $user->id;
+
         if (empty($table->id))
         {
-            // Set the values
-            $table->modified    = $date->toSql();
-            $table->modified_by = $user->id;
+            $table->created    = $date->toSql();
+            $table->created_by = $user->id;
         }
     }
 
@@ -167,8 +171,8 @@ class ResearchProjectsModelResearchProject extends JModelAdmin
     public function save($data)
     {
         $is_new = empty($data['id']);
-        $input  = JFactory::getApplication()->input;
         $app    = JFactory::getApplication();
+        $input  = JFactory::getApplication()->input;
         $db     = JFactory::getDBO();
 
         // Get parameters:
@@ -211,7 +215,6 @@ class ResearchProjectsModelResearchProject extends JModelAdmin
 
         if (!empty($new_investigators)) {
             $q = 'REPLACE INTO `#__researchprojects_collaborators` VALUES ' . implode(", ", $new_investigators) . ';';
-            #echo '<pre>'; var_dump($q); echo '</pre>'; exit;
             $db->setQuery($q);
             if (!$db->execute($q)) {
                 JError::raiseError( 500, $db->stderr() );
@@ -240,9 +243,8 @@ class ResearchProjectsModelResearchProject extends JModelAdmin
         }
 
         // Alter the title for save as copy
-        if ($app->input->get('task') == 'save2copy')
+        if ($input->get('task') == 'save2copy')
         {
-            #list($title, $alias) = $this->generateNewTitle($data['catid'], $data['alias'], $data['title']);
             list($title, $alias) = $this->generateNewTitle(0, $data['alias'], $data['title']);
             $data['title']    = $title;
             $data['alias']    = $alias;
@@ -266,7 +268,7 @@ class ResearchProjectsModelResearchProject extends JModelAdmin
                 }
 
                 #list($title, $alias) = $this->generateNewResearchProjectsTitle($data['alias'], $data['title']);
-                list($title, $alias) = $this->generateNewTitle($data['alias'], $data['title']);
+                list($title, $alias) = $this->generateNewTitle(0, $data['alias'], $data['title']);
                 $data['alias'] = $alias;
 
                 if (isset($msg)) {

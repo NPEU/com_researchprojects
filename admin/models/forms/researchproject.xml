@@ -90,7 +90,8 @@
             query="SELECT id, title FROM #__researchprojects_topics"
             key_field="id"
             value_field="title"
-            header="COM_RESEARCHPROJECTS_TOPICS_SELECT"
+            header=""
+            default=""
             required="true"
             multiple="true"
             filter="int_array"
@@ -156,7 +157,7 @@
         <field
             name="brand_id"
             type="sql"
-            default="1"
+            default=""
             label="COM_RESEARCHPROJECTS_BRAND_LABEL"
             description="COM_RESEARCHPROJECTS_BRAND_DESC"
             query="SELECT id AS value, name AS text FROM #__brands b WHERE b.catid = 171 ORDER BY text;"
