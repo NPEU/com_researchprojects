@@ -24,7 +24,7 @@ class ResearchProjectsModelResearchProjects extends JModelList
 	 */
 	public function getItems()
 	{
-        
+
         $items = parent::getItems();
         $db    = $this->getDbo();
 		$query = $db->getQuery(true);
@@ -37,13 +37,13 @@ class ResearchProjectsModelResearchProjects extends JModelList
                   ->from($db->qn('#__researchprojects_topics', 'pt'))
                   ->join('LEFT', $db->qn('#__researchprojects_topics_map', 'map') . ' ON (pt.id = map.topic_id)')
                   ->where($db->qn('map.project_id') . ' = ' . (int) $item->id);
-            
+
             $topics = $db->setQuery($query)->loadColumn();
             $item->topics = $topics;
-            
+
             // Add parsed pi/collaborator format:
             $item->pi_1_parsed = ResearchProjectsHelper::parseCollaborator($item->pi_1);
-        
+
             if (!empty($item->pi_2)) {
                 $item->pi_2_parsed = ResearchProjectsHelper::parseCollaborator($item->pi_2);
             }
@@ -51,7 +51,7 @@ class ResearchProjectsModelResearchProjects extends JModelList
         #echo '<pre>'; var_dump($items); echo '</pre>'; exit;
         return $items;
     }
-    
+
     /**
      * Method to build an SQL query to load the list data.
      *
@@ -62,7 +62,7 @@ class ResearchProjectsModelResearchProjects extends JModelList
         $app = JFactory::getApplication();
         $topic = $app->input->getInt('topic');
         #echo '<pre>'; var_dump($topic); echo '</pre>'; exit;
-        
+
         $this->setState('list.limit', 0);
         // Initialize variables.
         $db    = JFactory::getDbo();
@@ -73,8 +73,8 @@ class ResearchProjectsModelResearchProjects extends JModelList
               ->from($db->quoteName('#__researchprojects', 'a'));
 
 
-        
-        
+
+
         // Filter the items over the topic id if set.
 		#$topicId = $this->getState('filter.topic_id');
 		$topicId = $app->input->getInt('topic_id');
@@ -94,6 +94,7 @@ class ResearchProjectsModelResearchProjects extends JModelList
 		}
         #echo '<pre>'; var_dump($topicId); echo '</pre>'; exit;
         #$query->order($db->escape($orderCol) . ' ' . $db->escape($orderDirn));
+        $query->order($db->escape('a.title'));
 
         /*if (is_numeric($this->published))
         {
@@ -107,7 +108,7 @@ class ResearchProjectsModelResearchProjects extends JModelList
 
         return $query;
     }
-    
+
 
     /**
      * Method to get an array of data items (published and unpublished).
