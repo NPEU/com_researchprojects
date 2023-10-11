@@ -17,17 +17,17 @@ class ResearchProjectsModelResearchProjects extends JModelList
 {
     protected $published = 1;
 
-	/**
-	 * Gets the list of projects and adds expensive joins to the result set.
-	 *
-	 * @return  mixed  An array of data items on success, false on failure.
-	 */
-	public function getItems()
-	{
+    /**
+     * Gets the list of projects and adds expensive joins to the result set.
+     *
+     * @return  mixed  An array of data items on success, false on failure.
+     */
+    public function getItems()
+    {
 
         $items = parent::getItems();
         $db    = $this->getDbo();
-		$query = $db->getQuery(true);
+        $query = $db->getQuery(true);
         $t = array();
         foreach ($items as &$item)
         {
@@ -76,22 +76,22 @@ class ResearchProjectsModelResearchProjects extends JModelList
 
 
         // Filter the items over the topic id if set.
-		#$topicId = $this->getState('filter.topic_id');
-		$topicId = $app->input->getInt('topic_id');
+        #$topicId = $this->getState('filter.topic_id');
+        $topicId = $app->input->getInt('topic_id');
 
-		if ($topicId)
-		{
-			$query->join('LEFT', '#__researchprojects_topics_map AS map2 ON map2.project_id = a.id')
-				->group(
-					$db->quoteName(
-						array(
-							'a.id',
-							'a.title'
-						)
-					)
-				);
+        if ($topicId)
+        {
+            $query->join('LEFT', '#__researchprojects_topics_map AS map2 ON map2.project_id = a.id')
+                ->group(
+                    $db->quoteName(
+                        array(
+                            'a.id',
+                            'a.title'
+                        )
+                    )
+                );
             $query->where('map2.topic_id = ' . (int) $topicId);
-		}
+        }
         #echo '<pre>'; var_dump($topicId); echo '</pre>'; exit;
         #$query->order($db->escape($orderCol) . ' ' . $db->escape($orderDirn));
         $query->order($db->escape('a.title'));
@@ -115,7 +115,7 @@ class ResearchProjectsModelResearchProjects extends JModelList
      *
      * @return  mixed  An array of data items on success, false on failure.
      */
-    public function getAllItems()
+    public function ()
     {
         $this->published = '';
         return $this->getItems();

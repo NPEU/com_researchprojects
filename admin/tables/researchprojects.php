@@ -214,16 +214,16 @@ class ResearchProjectsTableResearchProjects extends JTable
     public function store($updateNulls = false)
     {
         $date   = \JFactory::getDate();
-		$user   = \JFactory::getUser();
+        $user   = \JFactory::getUser();
         $input  = \JFactory::getApplication()->input;
         $form_data = new JRegistry($input->get('jform', '', 'array'));
 
-		if (!$this->id)
-		{
-			// New item
-			$this->created    = $date->toSql();
+        if (!$this->id)
+        {
+            // New item
+            $this->created    = $date->toSql();
             $this->created_by = $user->get('id');
-		}
+        }
 
         // Attempt to store the data.
         $return = parent::store($updateNulls);
