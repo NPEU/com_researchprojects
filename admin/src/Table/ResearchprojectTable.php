@@ -11,18 +11,18 @@ namespace NPEU\Component\Researchprojects\Administrator\Table;
 
 defined('_JEXEC') or die;
 
+#use Joomla\CMS\Tag\TaggableTableInterface;
+#use Joomla\CMS\Tag\TaggableTableTrait;
+#use Joomla\CMS\Versioning\VersionableTableInterface;
+use Joomla\CMS\Access\Rules;
 use Joomla\CMS\Application\ApplicationHelper;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Filter\OutputFilter;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\Table\Nested;
 use Joomla\CMS\Table\Table;
 use Joomla\Database\DatabaseDriver;
 use Joomla\Registry\Registry;
-use Joomla\CMS\Factory;
-use Joomla\CMS\Access\Rules;
-use Joomla\CMS\Filter\OutputFilter;
-use Joomla\CMS\Language\Text;
-#use Joomla\CMS\Versioning\VersionableTableInterface;
-#use Joomla\CMS\Tag\TaggableTableInterface;
-#use Joomla\CMS\Tag\TaggableTableTrait;
 
 
 /**
