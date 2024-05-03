@@ -92,8 +92,7 @@ class HtmlView extends BaseHtmlView {
         $menus  = $app->getMenu();
         $menu   = $menus->getActive();
 
-        //$this->title = $menu->title;
-        //$this->title = $this->item->title;
+        $menu->title = $this->item->title;
 
         $this->menu_params = $menu->getParams();
 
@@ -167,7 +166,7 @@ class HtmlView extends BaseHtmlView {
 
         $this->return_page = base64_encode($uri);
 
-        if ($input->get('layout') == 'edit') {
+        /*if ($input->get('layout') == 'edit') {
             $document->page_heading_additional = ': ' . (
                 $is_new
               ? Text::_('COM_RESEARCHPROJECTS_RECORD_CREATING')
@@ -175,7 +174,7 @@ class HtmlView extends BaseHtmlView {
             );
         } else {
             $document->page_heading_additional = ': ' . $this->item->title;
-        }
+        }*/
 
         // Call the parent display to display the layout file
         parent::display($template);
