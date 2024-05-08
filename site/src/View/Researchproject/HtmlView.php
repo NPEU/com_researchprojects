@@ -48,9 +48,9 @@ class HtmlView extends BaseHtmlView {
     protected $state;
 
 
-    protected function getTitle() {
+    /*protected function getTitle() {
         return  $this->title = $menu->title;
-    }
+    }*/
 
 
     public function display($template = null)
@@ -91,22 +91,42 @@ class HtmlView extends BaseHtmlView {
         $uri    = Uri::getInstance();
         $menus  = $app->getMenu();
         $menu   = $menus->getActive();
-
-        $menu->title = $this->item->title;
-
+        #echo '<pre>'; var_dump($menu); echo '</pre>'; exit;
         $this->menu_params = $menu->getParams();
 
-        $this->return_page = base64_encode($uri::base() . $menu->route);
+        $pathway = $app->getPathway();
+
+        // Fix the pathway link:
+        // I don't think this should be necessary - I thought the Router should handle this???
+
+        $pathway = $app->getPathway();
+
+        $pathway_items = $pathway->getPathway();
+        $last_item =  array_pop($pathway_items);
+        $last_item->name =  $this->item->title;
+        $pathway_items[] = (object) ['name' => $menu->title, 'link' => $menu->link];
+        $pathway_items[] = $last_item;
+        #echo '<pre>'; var_dump($pathway_items); echo '</pre>'; exit;
+        #$pathway_items = $pathway->getPathway();
+        #echo '<pre>'; var_dump($last_item); echo '</pre>'; exit;
+
+        $pathway->setPathway($pathway_items);
+
+        // Set the menu (page) title to be this item:
+        $menu->title = $this->item->title;
 
 
-        $is_new = empty($this->item->id);
+        #$this->return_page = base64_encode($uri::base() . $menu->route);
+
+
+        /*$is_new = empty($this->item->id);
         $is_own = false;
         if (!$is_new && ($user->id == $this->item->created_by)) {
             $is_own = true;
-        }
+        }*/
 
         #echo '<pre>'; var_dump($user_is_root); echo '</pre>'; exit;
-        if ($user_is_root) {
+        /*if ($user_is_root) {
             $authorised = true;
         } elseif ($is_new) {
             $authorised = $user->authorise('core.create', 'com_researchprojects');
@@ -121,11 +141,11 @@ class HtmlView extends BaseHtmlView {
             throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
 
             return false;
-        }
+        }*/
 
 
         // Add to breadcrumbs:
-        $breadcrumb_title = false;
+        /*$breadcrumb_title = false;
         //if ((!$breadcrumb_title = $this->item->title) && $is_new) {
         if ($is_new) {
             $breadcrumb_title  = Text::_('COM_RESEARCHPROJECTS_PAGE_TITLE_ADD_NEW');
@@ -133,27 +153,9 @@ class HtmlView extends BaseHtmlView {
             if (!empty($this->item) && !empty($this->item->title)) {
                 $breadcrumb_title = $this->item->title;
             }
-        }
+        }*/
 
-        $pathway = $app->getPathway();
 
-        // Fix the pathway link:
-        // I don't think this should be necessary - I thought the Router should handle this, but the
-        // final URL is just 'index.php' (the link at this stage is:
-        // 'index.php?option=com_researchprojects&view=researchprojects&Itemid=xxx' )
-        // I'm fudging things here...
-        /*$pathway_items = $pathway->getPathway();
-        $c = count($pathway_items) - 1;
-        $link = $pathway_items[$c]->link;
-        $pathway_items[$c]->link = $menu->route;
-        #$pathway_items[$c]->link = preg_replace('/&Itemid=\d+$/', '', $link);
-
-        $pathway->setPathway($pathway_items);
-        */
-        /* --- */
-
-        $pathway->addItem($breadcrumb_title);
-        #echo '<pre>'; var_dump($pathway); echo '</pre>'; exit;
 
         // Check for errors.
         $errors = $this->get('Errors', false);
@@ -166,7 +168,7 @@ class HtmlView extends BaseHtmlView {
 
         $this->return_page = base64_encode($uri);
 
-        /*if ($input->get('layout') == 'edit') {
+       /* if ($input->get('layout') == 'edit') {
             $document->page_heading_additional = ': ' . (
                 $is_new
               ? Text::_('COM_RESEARCHPROJECTS_RECORD_CREATING')

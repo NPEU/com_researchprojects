@@ -128,7 +128,7 @@ class Router extends RouterView
         if ($alias === null) {
             return [];
         }
-        return array((int) $id => $id . '-' . $alias);
+        return [(int) $id => $id . '-' . $alias];
     }
 
 }
