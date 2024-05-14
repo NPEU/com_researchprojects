@@ -31,7 +31,7 @@ class ResearchprojectsModel extends \NPEU\Component\Researchprojects\Administrat
         $items = parent::getItems();
         $db    = $this->getDbo();
         $query = $db->getQuery(true);
-        $t = array();
+        $t = [];
         foreach ($items as &$item) {
             // Add topics:
             $query->clear()
@@ -82,10 +82,10 @@ class ResearchprojectsModel extends \NPEU\Component\Researchprojects\Administrat
             $query->join('LEFT', '#__researchprojects_topics_map AS map2 ON map2.project_id = a.id')
                 ->group(
                     $db->quoteName(
-                        array(
+                        [
                             'a.id',
                             'a.title'
-                        )
+                        ]
                     )
                 );
             $query->where('map2.topic_id = ' . (int) $topicId);

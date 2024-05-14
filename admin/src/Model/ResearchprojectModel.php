@@ -55,7 +55,7 @@ class ResearchprojectModel extends AdminModel
      *
      * @return  mixed    A JForm object on success, false on failure
      */
-    public function getForm($data = array(), $loadData = true)
+    public function getForm($data = [], $loadData = true)
     {
         // Get the form.
         $form = $this->loadForm(
@@ -98,7 +98,7 @@ class ResearchprojectModel extends AdminModel
         // Check the session for previously entered form data.
         $data = Factory::getApplication()->getUserState(
             'com_researchprojects.edit.researchproject.data',
-            array()
+            []
         );
 
         if (empty($data)) {
@@ -253,7 +253,7 @@ class ResearchprojectModel extends AdminModel
         // Pillay, Thillagavathie (Royal Wolverhampton NHS Trust)
         // Building something like this query:
         // REPLACE INTO `#__researchprojects_collaborators` VALUES ('Chris Gale (Imperial)'), ('Alex Heazell (Manchester)'), ('Tim Smith');
-        $new_investigators = array();
+        $new_investigators = [];
 
         if (!empty($data['pi_1'])) {
             // If not NPEU: e.g. Fiona Alderdice (NPEU)
@@ -293,7 +293,7 @@ class ResearchprojectModel extends AdminModel
         }
 
         // Special handling for funders. We need to add to the funders table all new values.
-        $new_funders = array();
+        $new_funders = [];
         if (!empty($data['funders']['funders0']['funder'])) {
             foreach ($data['funders'] as $key => $value) {
                 // If not NPEU: e.g. Fiona Alderdice (NPEU)

@@ -79,6 +79,37 @@ class HtmlView extends BaseHtmlView {
         #echo '<pre>'; var_dump($this->title); echo '</pre>'; exit;
         $this->menu_params = $menu->getParams();
 
+        $db    = Factory::getDbo();
+        // Get the list of topics:
+        $query = $db->getQuery(true)
+            ->select('*')
+            ->from($db->quoteName('#__researchprojects_topics'));
+        $db->setQuery($query);
+
+        $topics = $db->loadObjectList('id');
+        #echo '<pre>'; var_dump($topics); echo '</pre>'; exit;
+
+        $topic_title = '';
+        $doc_title = '';
+        $topic_id = $app->input->getInt('topic_id');
+        if ($topic_id) {
+
+            $query = $db->getQuery(true)
+                ->select($db->quoteName('title'))
+                ->from($db->quoteName('#__researchprojects_topics'))
+                ->where($db->quoteName('id') . ' = ' . $db->quote($topic_id));
+            $db->setQuery($query);
+
+            $topic_title = $db->loadResult();
+            #echo '<pre>'; var_dump($topic_title); echo '</pre>'; exit;
+        }
+
+        if ($topic_title) {
+            $doc_title = ': ' . $topic_title;
+            $pathway->addItem($topic_title);
+        }
+
+        $this->topics = $topics;
 
         /*
         // We may not actually want to show the form at this point (though we could if we wanted to

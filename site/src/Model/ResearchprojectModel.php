@@ -179,16 +179,17 @@ class ResearchprojectModel extends \NPEU\Component\Researchprojects\Administrato
      *
      * @since   1.6
      */
-    /*public function getForm($data = array(), $loadData = true)
+    public function getForm($data = array(), $loadData = true)
     {
         // Get the form.
+        // Note we're using the form to provice assosiated labels to data fields for display.
         // To DRY use the admin form use:
         // JPATH_COMPONENT_ADMINISTRATOR . '/forms/researchproject.xml',
         // or if you need a separate site form, use:
         // JPATH_COMPONENT_SITE . '/forms/researchproject.xml',
         $form = $this->loadForm(
             'com_researchprojects.form',
-            JPATH_COMPONENT_SITE . '/forms/researchproject.xml',
+            JPATH_COMPONENT_ADMINISTRATOR . '/forms/researchproject.xml',
             array(
                 'control' => 'jform',
                 'load_data' => $loadData
@@ -201,7 +202,7 @@ class ResearchprojectModel extends \NPEU\Component\Researchprojects\Administrato
         }
 
         return $form;
-    }*/
+    }
 
     /**
      * Method to get a table object, load it if necessary.
