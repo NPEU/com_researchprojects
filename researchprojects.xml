@@ -9,7 +9,7 @@
     <copyright>(C) NPEU 2023</copyright>
     <license>MIT License; see LICENSE.md</license>
 
-    <version>4.1.0</version>
+    <version>4.1.1</version>
     <description>COM_RESEARCHPROJECTS_DESCRIPTION</description>
 
     <namespace path="src">NPEU\Component\Researchprojects</namespace>
@@ -35,7 +35,6 @@
     </update>
 
     <files folder="site">
-        <folder>forms</folder>
         <folder>language</folder>
         <folder>src</folder>
         <folder>tmpl</folder>
