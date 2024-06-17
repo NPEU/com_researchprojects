@@ -59,6 +59,8 @@ class HtmlView extends BaseHtmlView {
         $user_is_root = $user->authorise('core.admin');
         $this->user  = $user;
 
+        $document = Factory::getDocument();
+
 
         // We may not actually want to show the form at this point (though we could if we wanted to
         // include the form AND the record on the same page - especially if it's displayed via a
@@ -76,7 +78,6 @@ class HtmlView extends BaseHtmlView {
         $menu   = $menus->getActive();
 
         $this->title = $this->getTitle($menu->title);
-        #echo '<pre>'; var_dump($this->title); echo '</pre>'; exit;
         $this->menu_params = $menu->getParams();
 
         $db    = Factory::getDbo();
@@ -87,7 +88,6 @@ class HtmlView extends BaseHtmlView {
         $db->setQuery($query);
 
         $topics = $db->loadObjectList('id');
-        #echo '<pre>'; var_dump($topics); echo '</pre>'; exit;
 
         $topic_title = '';
         $doc_title = '';
@@ -101,31 +101,13 @@ class HtmlView extends BaseHtmlView {
             $db->setQuery($query);
 
             $topic_title = $db->loadResult();
-            #echo '<pre>'; var_dump($topic_title); echo '</pre>'; exit;
-        }
+            $document->page_heading_additional = ' Topic: ' . $topic_title;
 
-        if ($topic_title) {
-            $doc_title = ': ' . $topic_title;
-            $pathway->addItem($topic_title);
+            $pathway = $app->getPathway();
+            $pathway->addItem('Topic: ' . $topic_title);
         }
 
         $this->topics = $topics;
-
-        /*
-        // We may not actually want to show the form at this point (though we could if we wanted to
-        // include the form AND the list on the same page - especially if it's displayed via a
-        // modal), but it's useful to have the form so we can retrieve language strings without
-        // having to manually redeclare them, along with any other properties of the form that may be
-        // useful:
-        //$this->setModel($this->getModel('researchprojects'));
-        #jimport('joomla.application.component.model');
-        #JModelLegacy::addIncludePath(JPATH_SITE . '/components/com_researchprojects/models');
-        require JPATH_SITE . '/components/com_researchprojects/models/researchproject.php';
-        $researchprojects_model = JModelLegacy::getInstance('Researchprojectform', 'ResearchprojectsModel');
-        #echo '<pre>'; var_dump($researchprojects_model); echo '</pre>'; exit;
-        $form = $researchprojects_model->getForm();
-        #echo '<pre>'; var_dump($form); echo '</pre>'; exit;
-        */
 
         // Add to breadcrumbs:
         $pathway = $app->getPathway();
@@ -150,115 +132,6 @@ class HtmlView extends BaseHtmlView {
 
         // Call the parent display to display the layout file
         parent::display($template);
-
-        /*
-
-        $user = JFactory::getUser();
-        $user_is_root = $user->authorise('core.admin');
-
-        $item = $this->get('Item');
-        // We may not actually want to show the form at this point (though we could if we wanted to
-        // include the form AND the record on the same page - especially if it's displayed via a
-        // modal), but it's useful to have the form so we can retrieve language strings without
-        // having to manually reclare them, along with any other properties of the form that may be
-        // useful:
-        $form = $this->get('Form');
-        #echo '<pre>'; var_dump($item); echo '</pre>'; exit;
-        #echo '<pre>'; var_dump($form); echo '</pre>'; exit;
-        #echo '<pre>'; var_dump($this->getLayout()); echo '</pre>'; exit;
-
-        $app    = JFactory::getApplication();
-        $menus  = $app->getMenu();
-        $menu   = $menus->getActive();
-        #echo '<pre>'; var_dump($menu); echo '</pre>'; exit;
-        #echo '<pre>'; var_dump(JRoute::_($menu->link)); echo '</pre>'; exit;
-        #echo '<pre>'; var_dump(URI::base()); echo '</pre>'; exit;
-        #echo '<pre>'; var_dump($item->id); echo '</pre>'; exit;
-        #echo '<pre>'; var_dump($user, $item); echo '</pre>'; exit;
-        #echo '<pre>'; var_dump($user->id, $item->created_by); echo '</pre>'; exit;
-
-        $this->return_page = base64_encode(URI::base() . $menu->route);
-
-
-        $is_new = empty($item->id);
-        $is_own = false;
-        if (!$is_new && ($user->id == $item->created_by)) {
-            $is_own = true;
-        }
-
-
-        if ($user_is_root) {
-            $authorised = true;
-        } elseif ($is_new) {
-            $authorised = $user->authorise('core.create', 'com_researchprojects');
-        } elseif ($is_own) {
-            $authorised = $user->authorise('core.edit.own', 'com_researchprojects');
-        }
-        else {
-            $authorised = $user->authorise('core.edit', 'com_researchprojects');
-        }
-
-        if ($authorised !== true && $this->getLayout() == 'form') {
-            JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
-
-            return false;
-        }
-
-
-        // Assign data to the view
-        $this->item = $item;
-        // Although we're not actually showing the form, it's useful to use it to be able to show
-        // the field names without having to explicitly state them (more DRY):
-        $this->form = $form;
-
-        */
-
-
-
-
-        /*
-        $app = Factory::getApplication();
-
-        $this->item   = $this->get('Item');
-        $this->state  = $this->get('State');
-        $this->params = $this->state->get('params');
-
-        // Create a shortcut for $item.
-        $item = $this->item;
-
-        $item->slug = $item->alias ? ($item->id . ':' . $item->alias) : $item->id;
-
-        $temp         = $item->params;
-        $item->params = clone $app->getParams();
-        $item->params->merge($temp);
-
-        $offset = $this->state->get('list.offset');
-
-        $app->triggerEvent('onContentPrepare', array('com_weblinks.weblink', &$item, &$item->params, $offset));
-
-        $item->event = new \stdClass;
-
-        $results = $app->triggerEvent('onContentAfterTitle', array('com_weblinks.weblink', &$item, &$item->params, $offset));
-        $item->event->afterDisplayTitle = trim(implode("\n", $results));
-
-        $results = $app->triggerEvent('onContentBeforeDisplay', array('com_weblinks.weblink', &$item, &$item->params, $offset));
-        $item->event->beforeDisplayContent = trim(implode("\n", $results));
-
-        $results = $app->triggerEvent('onContentAfterDisplay', array('com_weblinks.weblink', &$item, &$item->params, $offset));
-        $item->event->afterDisplayContent = trim(implode("\n", $results));
-
-        parent::display($tpl);
-        */
-
-
-
-
-
-
-
-        /*// Assign data to the view
-        $this->msg = 'Get from API';
-        */
 
     }
 

@@ -20,13 +20,12 @@ use Joomla\CMS\Component\Router\RouterViewConfiguration;
 use Joomla\CMS\Component\Router\Rules\MenuRules;
 use Joomla\CMS\Component\Router\Rules\NomenuRules;
 use Joomla\CMS\Component\Router\Rules\StandardRules;
-/**/use Joomla\CMS\MVC\Factory\MVCFactoryAwareTrait;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\Menu\AbstractMenu;
+use Joomla\CMS\MVC\Factory\MVCFactoryAwareTrait;
 use Joomla\Database\DatabaseInterface;
 use Joomla\Database\ParameterType;
-
-#use NPEU\Component\Researchprojects\Site\Service\CustomRouterRules;
-
 
 
 class Router extends RouterView
@@ -49,32 +48,27 @@ class Router extends RouterView
      */
     public function __construct(SiteApplication $app, AbstractMenu $menu)
     {
-        //$this->categoryFactory = $categoryFactory;
-        //$this->db              = $db;
         $this->db = \Joomla\CMS\Factory::getContainer()->get('DatabaseDriver');
 
-        //$this->attachRule(new CustomRouterRules($this));
-
-        #$category = new RouterViewConfiguration('category');
-        #$category->setKey('id')->setNestable();
-        #$this->registerView($category);
         $researchprojects = new RouterViewConfiguration('researchprojects');
-        $researchprojects->addLayout('other');
+
         $this->registerView($researchprojects);
 
         $researchproject = new RouterViewConfiguration('researchproject');
         $researchproject->setKey('id')->setParent($researchprojects);
+
         $this->registerView($researchproject);
 
-
-        //$this->attachRule(new CustomRouterRules($this));
 
         parent::__construct($app, $menu);
 
         $this->attachRule(new MenuRules($this));
         $this->attachRule(new StandardRules($this));
         $this->attachRule(new NomenuRules($this));
+
+        $this->attachRule(new CustomRouterRules($this));
     }
+
 
     /**
      * Method to get the id for an researchprojects item from the segment
@@ -84,25 +78,9 @@ class Router extends RouterView
      *
      * @return  mixed   The id of this item or false
      */
-    public function getResearchprojectId(string $segment, array $query): bool|int
+    public function getResearchprojectId(string $segment, array $query): bool|string
     {
-        #echo 'getResearchprojectId<pre>'; var_dump($segment); echo '</pre>'; exit;
-        // If the alias (segment) has been constructed to include the id as a
-        // prefixed part of it, (e.g. 123-thing-name) then we can use this:
-        //return (int) $segment;
-        // Otherwise we'll need to query the database:
-        $id = (int) $segment;
-        #echo 'getResearchprojectId<pre>'; var_dump($id); echo '</pre>'; exit;
-        $db = $this->db;
-        $dbQuery = $db->getQuery(true)
-            ->select($db->quoteName('id'))
-            ->from($db->quoteName('#__researchprojects'))
-            ->where($db->quoteName('id') . ' = :id')
-            ->bind(':id', $id, ParameterType::INTEGER);
-
-        $return = $db->setQuery($dbQuery)->loadResult() ?: false;
-        #echo 'getResearchprojectId<pre>'; var_dump($return); echo '</pre>'; exit;
-        return $return;
+        return $segment;
     }
 
     /**

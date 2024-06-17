@@ -35,12 +35,12 @@ class ResearchprojectsModel extends \NPEU\Component\Researchprojects\Administrat
         foreach ($items as &$item) {
             // Add topics:
             $query->clear()
-                  ->select($db->qn('title'))
+                  ->select('*')
                   ->from($db->qn('#__researchprojects_topics', 'pt'))
                   ->join('LEFT', $db->qn('#__researchprojects_topics_map', 'map') . ' ON (pt.id = map.topic_id)')
                   ->where($db->qn('map.project_id') . ' = ' . (int) $item->id);
 
-            $topics = $db->setQuery($query)->loadColumn();
+                  $topics = $db->setQuery($query)->loadObjectList('id');
             $item->topics = $topics;
 
             // Add parsed pi/collaborator format:
@@ -50,7 +50,6 @@ class ResearchprojectsModel extends \NPEU\Component\Researchprojects\Administrat
                 $item->pi_2_parsed = ResearchProjectsHelper::parseCollaborator($item->pi_2);
             }
         }
-        #echo '<pre>'; var_dump($items); echo '</pre>'; exit;
         return $items;
     }
 
@@ -62,7 +61,6 @@ class ResearchprojectsModel extends \NPEU\Component\Researchprojects\Administrat
     protected function getListQuery() {
         $app = Factory::getApplication();
         $topic = $app->input->getInt('topic');
-        #echo '<pre>'; var_dump($topic); echo '</pre>'; exit;
 
         $this->setState('list.limit', 0);
         // Initialize variables.
@@ -73,9 +71,7 @@ class ResearchprojectsModel extends \NPEU\Component\Researchprojects\Administrat
         $query->select('*')
               ->from($db->quoteName('#__researchprojects', 'a'));
 
-
         // Filter the items over the topic id if set.
-        #$topicId = $this->getState('filter.topic_id');
         $topicId = $app->input->getInt('topic_id');
 
         if ($topicId) {
@@ -90,42 +86,10 @@ class ResearchprojectsModel extends \NPEU\Component\Researchprojects\Administrat
                 );
             $query->where('map2.topic_id = ' . (int) $topicId);
         }
-        #echo '<pre>'; var_dump($topicId); echo '</pre>'; exit;
-        #$query->order($db->escape($orderCol) . ' ' . $db->escape($orderDirn));
-        $query->order($db->escape('a.title'));
 
-        /*if (is_numeric($this->published))
-        {
-            $query->where('state = ' . (int) $this->published);
-        }
-        elseif ($this->published === '')
-        {
-            $query->where('(state IN (0, 1))');
-        }*/
-        #echo '<pre>'; var_dump($query); echo '</pre>'; exit;
+        $query->order($db->escape('a.title'));
 
         return $query;
     }
-
-
-    /**
-     * Method to get an array of data items (published and unpublished).
-     *
-     * @return  mixed  An array of data items on success, false on failure.
-     */
-    /*public function getAllItems() {
-        $this->published = '';
-        return $this->getItems();
-    }*/
-
-    /**
-     * Method to get an array of data items (unpublished only).
-     *
-     * @return  mixed  An array of data items on success, false on failure.
-     */
-    /*public function getUnpublishedItems() {
-        $this->published = 0;
-        return $this->getItems();
-    }*/
 
 }
