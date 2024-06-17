@@ -115,6 +115,15 @@ class HtmlView extends BaseHtmlView {
 
         $this->return_page = base64_encode($uri::base() . $menu->route);
 
+        $db    = Factory::getDbo();
+        // Get the list of topics:
+        $query = $db->getQuery(true)
+            ->select('*')
+            ->from($db->quoteName('#__researchprojects_topics'));
+        $db->setQuery($query);
+
+        $topics = $db->loadObjectList('id');
+        $this->topics = $topics;
 
 
         // Check for errors.

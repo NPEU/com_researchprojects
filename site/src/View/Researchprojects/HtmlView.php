@@ -88,6 +88,7 @@ class HtmlView extends BaseHtmlView {
         $db->setQuery($query);
 
         $topics = $db->loadObjectList('id');
+        $this->topics = $topics;
 
         $topic_title = '';
         $doc_title = '';
@@ -107,7 +108,6 @@ class HtmlView extends BaseHtmlView {
             $pathway->addItem('Topic: ' . $topic_title);
         }
 
-        $this->topics = $topics;
 
         // Add to breadcrumbs:
         $pathway = $app->getPathway();

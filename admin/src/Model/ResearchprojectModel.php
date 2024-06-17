@@ -61,10 +61,10 @@ class ResearchprojectModel extends AdminModel
         $form = $this->loadForm(
             'com_researchprojects.researchproject',
             'researchproject',
-            array(
+            [
                 'control' => 'jform',
                 'load_data' => $loadData
-            )
+            ]
         );
 
         if (empty($form)) {
@@ -118,44 +118,16 @@ class ResearchprojectModel extends AdminModel
     public function getItem($pk = null)
     {
         if ($item = parent::getItem($pk)) {
-            /*// Convert the metadata field to an array.
-            $registry = new Registry;
-            $registry->loadString($item->metadata);
-            $item->metadata = $registry->toArray();
-
-            // Convert the images field to an array.
-            $registry = new Registry;
-            $registry->loadString($item->images);
-            $item->images = $registry->toArray();
-
-            if (!empty($item->id)) {
-                $item->tags = new JHelperTags;
-                $item->tags->getTagIds($item->id, 'com_weblinks.weblink');
-                $item->metadata['tags'] = $item->tags;
-            }*/
-            #echo '<pre>'; var_dump($item); echo '</pre>'; exit;
-            #echo '<pre>'; var_dump($item->topics); echo '</pre>'; exit;
             if (!empty($item->topics)) {
                 $registry = new Registry;
                 $registry->loadObject($item->topics);
                 $item->topics = $registry->toArray();
-                #echo '<pre>'; var_dump($item->topics); echo '</pre>'; exit;
 
                 // we need to convert the topics field to an array so the form select displays the
                 // correct values, but we don't want to lose the titles, so copying it over:
                 $item->topic_details = $item->topics;
                 $item->topics = array_keys($item->topics);
             }
-            // Convert the collaborators field to an array.
-            /*echo '<pre>'; var_dump($item->collaborators); echo '</pre>'; exit;
-            $registry = new Registry;
-            $registry->loadString($item->collaborators);
-            $item->collaborators = $registry->toArray();
-
-            // Convert the funders field to an array.
-            $registry = new Registry;
-            $registry->loadString($item->funders);
-            $item->funders = $registry->toArray();*/
         }
 
         return $item;
@@ -189,30 +161,6 @@ class ResearchprojectModel extends AdminModel
             $table->created    = $date->toSql();
             $table->created_by = $user->id;
         }
-
-        /*if (empty($table->id)) {
-            // Set the values
-
-            // Set ordering to the last item if not set
-            if (empty($table->ordering)) {
-                $db    = $this->getDbo();
-                $query = $db->getQuery(true)
-                    ->select('MAX(ordering)')
-                    ->from($db->quoteName('#__weblinks'));
-
-                $db->setQuery($query);
-                $max = $db->loadResult();
-
-                $table->ordering = $max + 1;
-            } else {
-                // Set the values
-                $table->modified    = $date->toSql();
-                $table->modified_by = $user->id;
-            }
-        }
-
-        // Increment the weblink version number.
-        $table->version++;*/
     }
 
     /**
@@ -322,7 +270,7 @@ class ResearchprojectModel extends AdminModel
 
         // Automatic handling of alias for empty fields
         // Taken from com_content/models/article.php
-        if (in_array($input->get('task'), array('apply', 'save', 'save2new'))) {
+        if (in_array($input->get('task'), ['apply', 'save', 'save2new'])) {
             if (empty($data['alias'])) {
                 if (Factory::getConfig()->get('unicodeslugs') == 1) {
                     $data['alias'] = \Joomla\CMS\Filter\OutputFilter::stringURLUnicodeSlug($data['title']);
@@ -332,7 +280,7 @@ class ResearchprojectModel extends AdminModel
 
                 $table = $this->getMVCFactory()->createTable('Researchproject', 'Administrator');
 
-                if ($table->load(array('alias' => $data['alias']))) {
+                if ($table->load(['alias' => $data['alias']])) {
                     $msg = \Joomla\CMSanguage\Text::_('COM_CONTENT_SAVE_WARNING');
                 }
 
@@ -362,7 +310,7 @@ class ResearchprojectModel extends AdminModel
         // Alter the title & alias
         $table = $this->getTable();
 
-        while ($table->load(array('alias' => $alias))) {
+        while ($table->load(['alias' => $alias])) {
             if ($name == $table->title) {
                 $name = \Joomla\String\StringHelper::increment($name);
             }
@@ -370,70 +318,6 @@ class ResearchprojectModel extends AdminModel
             $alias = \Joomla\String\StringHelper::increment($alias, 'dash');
         }
 
-        return array($name, $alias);
+        return [$name, $alias];
     }
-
-    /**
-     * Copied from libraries/src/MVC/Model/AdminModel.php because it uses a hard-coded field name:
-     * catid.
-     *
-     * Method to change the title & alias.
-     *
-     * @param   string   $alias        The alias.
-     * @param   string   $title        The title.
-     *
-     * @return  array  Contains the modified title and alias.
-     */
-    /*protected function generateNewResearchprojectsTitle($alias, $title)
-    {
-        // Alter the title & alias
-        $table = $this->getTable();
-
-        while ($table->load(array('alias' => $alias)))
-        {
-            $title = StringHelper::increment($title);
-            $alias = StringHelper::increment($alias, 'dash');
-        }
-
-        return array($title, $alias);
-    }*/
-
-
-    /**
-     * Method to get the script that have to be included on the form
-     *
-     * @return string   Script files
-     */
-    /*public function getScript()
-    {
-        #return 'administrator/components/com_researchprojects/models/forms/researchprojects.js';
-        return '';
-    }*/
-
-    /**
-     * Delete this if not needed. Here for reference.
-     * Method to get the data that should be injected in the form.
-     *
-     * @return  bool  Email success/failed to send.
-     */
-    /*private function _sendEmail($email_data)
-    {
-            $app        = Factory::getApplication();
-            $mailfrom   = $app->getCfg('mailfrom');
-            $fromname   = $app->getCfg('fromname');
-            $sitename   = $app->getCfg('sitename');
-            $email      = \Joomla\String\StringHelperPunycode::emailToPunycode($email_data['email']);
-
-            // Ref: Text::sprintf('LANG_STR', $var, ...);
-
-            $mail = Factory::getMailer();
-            $mail->addRecipient($email);
-            $mail->addReplyTo($mailfrom);
-            $mail->setSender(array($mailfrom, $fromname));
-            $mail->setSubject(Text::_('COM_RESEARCHPROJECTS_EMAIL_ADMINS_SUBJECT'));
-            $mail->setBody(Text::_('COM_RESEARCHPROJECTS_EMAIL_ADMINS_BODY'));
-            $sent = $mail->Send();
-
-            return $sent;
-    }*/
 }

@@ -31,10 +31,10 @@ class ResearchprojectsModel extends ListModel
      *
      * @see     JController
      */
-    public function __construct($config = array())
+    public function __construct($config = [])
     {
         if (empty($config['filter_fields'])) {
-            $config['filter_fields'] = array(
+            $config['filter_fields'] = [
                 'id', 'a.id',
                 'title', 'a.title',
                 'alias', 'a.alias',
@@ -51,7 +51,7 @@ class ResearchprojectsModel extends ListModel
                 'checked_out', 'a.checked_out',
                 'checked_out_time', 'a.checked_out_time',
                 'access', 'a.access'
-            );
+            ];
         }
 
         parent::__construct($config);
@@ -117,7 +117,7 @@ class ResearchprojectsModel extends ListModel
             $topicId = $this->getState('filter.topic_id');
 
             if (isset($topics) && (empty($topics) || $topicId && !in_array($topicId, $topics))) {
-                $items = array();
+                $items = [];
             } else {
                 $items = parent::getItems();
             }
@@ -133,7 +133,7 @@ class ResearchprojectsModel extends ListModel
             // Find the information only on the result set.
 
             // First pass: get list of the project id's and reset the counts.
-            $projectIds = array();
+            $projectIds = [];
 
             foreach ($items as $item) {
                 $projectIds[] = (int) $item->id;
@@ -220,10 +220,10 @@ class ResearchprojectsModel extends ListModel
             $query->join('LEFT', '#__researchprojects_topics_map AS map2 ON map2.project_id = a.id')
                 ->group(
                     $db->quoteName(
-                        array(
+                        [
                             'a.id',
                             'a.title'
-                        )
+                        ]
                     )
                 );
             $query->where('map2.topic_id = ' . (int) $topicId);
@@ -281,7 +281,7 @@ class ResearchprojectsModel extends ListModel
         try {
             $result = $db->setQuery($query)->loadColumn();
         } catch (RunTimeException $e) {
-            $result = array();
+            $result = [];
         }
 
         return implode("\n", $result);
