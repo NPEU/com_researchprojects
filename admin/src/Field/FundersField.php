@@ -54,7 +54,7 @@ class FundersField extends ComboField
      */
     protected function getOptions()
     {
-        $options = array();
+        $options = [];
         $db = Factory::getDBO();
         $q  = 'SELECT funder FROM `#__researchprojects_funders` ORDER BY funder;';
 

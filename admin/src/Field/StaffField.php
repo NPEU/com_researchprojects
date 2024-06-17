@@ -39,7 +39,7 @@ class StaffField extends ListField
      */
     protected function getOptions()
     {
-        $options = array();
+        $options = [];
         $db = Factory::getDBO();
         $q  = 'SELECT u.id, u.name, up1.profile_value AS first_name, up2.profile_value AS last_name FROM `#__users` u ';
         $q .= 'JOIN `#__user_usergroup_map` ugm ON u.id = ugm.user_id ';

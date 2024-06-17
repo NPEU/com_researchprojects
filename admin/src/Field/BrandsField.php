@@ -33,7 +33,7 @@ class BrandsField extends ListField
      */
     protected function getOptions()
     {
-        $options = array();
+        $options = [];
         $db = Factory::getDBO();
         $q  = 'SELECT id, name FROM #__brands WHERE catid = 171 ORDER BY name';
 
@@ -48,7 +48,7 @@ class BrandsField extends ListField
 
         $i = 0;
         foreach ($brands as $brand) {
-            $options[] = HTMLHelper_('select.option', $brand['id'], $brand['name']);
+            $options[] = HTMLHelper::_('select.option', $brand['id'], $brand['name']);
             $i++;
         }
 

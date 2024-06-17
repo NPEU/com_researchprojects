@@ -62,8 +62,8 @@ class CollaboratorsField extends ComboField
      */
     protected function getOptions()
     {
-        $collaborators = array();
-        $options = array();
+        $collaborators = [];
+        $options = [];
         $db = Factory::getDBO();
 
 
