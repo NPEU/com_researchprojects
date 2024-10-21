@@ -56,7 +56,7 @@ class CustomRouterRules implements \Joomla\CMS\Component\Router\Rules\RulesInter
                 $vars['topic_id'] = $topic_id;
             }
 
-            if ($this->project_exists((int) $segments[0])) {
+            if (isset($segments[0]) && $this->project_exists((int) $segments[0])) {
                 $vars['view'] = 'researchproject';
                 $vars['id'] = (int) $segments[0];
             }
