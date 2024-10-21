@@ -5,11 +5,11 @@
         <description>Joomla! com_researchprojects component</description>
         <element>com_researchprojects</element>
         <type>component</type>
-        <version>4.1.3</version>
+        <version>4.1.4</version>
         <client>administrator</client>
-        <infourl title="NPEU: com_researchprojects">https://github.com/NPEU/com_researchprojects/releases/tag/v4.1.3</infourl>
+        <infourl title="NPEU: com_researchprojects">https://github.com/NPEU/com_researchprojects/releases/tag/v4.1.4</infourl>
         <downloads>
-            <downloadurl type="full" format="zip">https://github.com/NPEU/com_researchprojects/archive/v4.1.3.zip</downloadurl>
+            <downloadurl type="full" format="zip">https://github.com/NPEU/com_researchprojects/archive/v4.1.4.zip</downloadurl>
         </downloads>
         <targetplatform name="joomla" />
         <tags>
