@@ -159,7 +159,7 @@
         <field
             name="brand_id"
             type="sql"
-            default=""
+            default="0"
             label="COM_RESEARCHPROJECTS_BRAND_LABEL"
             description="COM_RESEARCHPROJECTS_BRAND_DESC"
             query="SELECT id AS value, name AS text FROM #__brands b WHERE b.catid = 171 ORDER BY text;"
