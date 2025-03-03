@@ -210,7 +210,7 @@ class ResearchprojectsModel extends ListModel
         $query->select($db->quoteName('o.name', 'owner_name'))
             ->select($db->quoteName('o.username', 'owner_username'))
             ->select($db->quoteName('o.email', 'owner_email'))
-            ->join('LEFT', $db->quoteName('#__users', 'o') . ' ON ' . $db->qn('o.id') . ' = ' . $db->qn('a.owner_user_id'));
+            ->join('LEFT', $db->quoteName('#__users', 'o') . ' ON ' . $db->quoteName('o.id') . ' = ' . $db->quoteName('a.owner_user_id'));
 
 
         // Filter the items over the topic id if set.
@@ -273,10 +273,10 @@ class ResearchprojectsModel extends ListModel
     {
         $db    = $this->getDbo();
         $query = $db->getQuery(true)
-            ->select($db->qn('title'))
-            ->from($db->qn('#__researchprojects_topics', 'pt'))
-            ->join('LEFT', $db->qn('#__researchprojects_topics_map', 'map') . ' ON (pt.id = map.topic_id)')
-            ->where($db->qn('map.project_id') . ' = ' . (int) $project_id);
+            ->select($db->quoteName('title'))
+            ->from($db->quoteName('#__researchprojects_topics', 'pt'))
+            ->join('LEFT', $db->quoteName('#__researchprojects_topics_map', 'map') . ' ON (pt.id = map.topic_id)')
+            ->where($db->quoteName('map.project_id') . ' = ' . (int) $project_id);
 
         try {
             $result = $db->setQuery($query)->loadColumn();

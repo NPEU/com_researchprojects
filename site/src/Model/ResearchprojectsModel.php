@@ -36,9 +36,9 @@ class ResearchprojectsModel extends \NPEU\Component\Researchprojects\Administrat
             // Add topics:
             $query->clear()
                   ->select('*')
-                  ->from($db->qn('#__researchprojects_topics', 'pt'))
-                  ->join('LEFT', $db->qn('#__researchprojects_topics_map', 'map') . ' ON (pt.id = map.topic_id)')
-                  ->where($db->qn('map.project_id') . ' = ' . (int) $item->id);
+                  ->from($db->quoteName('#__researchprojects_topics', 'pt'))
+                  ->join('LEFT', $db->quoteName('#__researchprojects_topics_map', 'map') . ' ON (pt.id = map.topic_id)')
+                  ->where($db->quoteName('map.project_id') . ' = ' . (int) $item->id);
 
                   $topics = $db->setQuery($query)->loadObjectList('id');
             $item->topics = $topics;
