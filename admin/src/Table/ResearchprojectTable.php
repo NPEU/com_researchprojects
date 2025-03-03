@@ -59,9 +59,6 @@ class ResearchprojectTable extends Table
         $this->typeAlias = 'com_researchprojects.researchproject';
 
         parent::__construct('#__researchprojects', 'id', $db);
-
-        // In functions such as generateTitle() Joomla looks for the 'title' field ...
-        #$this->setColumnAlias('title', 'greeting');
     }
 
        /**
@@ -255,9 +252,10 @@ class ResearchprojectTable extends Table
     public function check() {
         $this->alias = trim($this->alias);
         if (empty($this->alias)) {
-            $this->alias = $this->greeting;
+            $this->alias = OutputFilter::stringURLSafe($this->title);
+        } else {
+            $this->alias = OutputFilter::stringURLSafe($this->alias);
         }
-        $this->alias = OutputFilter::stringURLSafe($this->alias);
 
         // Check for valid name
         if (trim($this->title) == '') {
